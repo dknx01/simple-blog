@@ -1,0 +1,14 @@
+// Import Bootstrap variables for use within theme
+@import "~bootstrap/scss/functions.scss";
+@import "~bootstrap/scss/variables.scss";
+$primary: darken(#428bca, 20%);
+$partei-red: rgb(180, 40, 55);
+$link-color: $primary;
+$link-hover-color: $partei-red;
+$navbar-light-color: rgba($partei-red, 1);
+$navbar-dark-color: $gray-300;
+// Import spacing variables
+@import "./variables/spacing.scss";
+
+// Import navigation variables
+@import "./variables/navigation.scss";

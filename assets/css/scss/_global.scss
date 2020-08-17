@@ -1,0 +1,124 @@
+// Global styling for this template
+html,
+body {
+  height: 100%;
+  background-color: $white;
+}
+
+// Set spacing on containers for page symmetry
+
+.container,
+.container-fluid {
+  padding-left: $grid-gutter-width;
+  padding-right: $grid-gutter-width;
+}
+
+.btn-partei {
+    color: #fff;
+    background-color: $partei-red;
+    border-color: $partei-red;
+}
+.nav-link:focus {
+  background-color: rgba($partei-red, 1) !important;
+}
+
+// the ~ allows you to reference things in node_modules
+// @import "~bootstrap/scss/bootstrap";
+
+.container {
+  padding-top: 55px
+}
+.admin {
+  color: $partei-red !important;
+}
+.bg-light {
+  background: $gray-300 !important;
+}
+
+.navbar-light .navbar-nav .nav-link {
+  @include hover-focus() {
+    color: $navbar-light-hover-color;
+    background-color: $partei-red;
+    font-weight: normal;
+  }
+}
+
+.sb-sidenav > .sb-sidenav-menu > .nav > .nav-link:focus {
+    //color: $partei-red !important;
+    background-color: $sidenav-light-bg !important;
+    color: $navbar-light-color !important;
+    font-weight: normal !important;
+}
+.sb-sidenav .sb-sidenav-menu .nav .nav-link {
+  @include hover-focus() {
+    color: $sidenav-light-color;
+    font-weight: normal;
+  }
+}
+.sb-sidenav-menu-nested > .nav > .nav-link:focus {
+  color: $navbar-light-color !important;
+}
+
+.gray-background {
+  background-color: $gray-300 !important;
+}
+.no_sidenav {
+  padding-left: unset;
+}
+
+.sb-sidenav .sb-sidenav-menu .nav .nav-link:focus {
+  color: $sidenav-light-color !important;
+}
+
+/* common */
+.ribbon {
+  width: 150px;
+  height: 150px;
+  overflow: hidden;
+  position: absolute;
+}
+.ribbon::before,
+.ribbon::after {
+  position: absolute;
+  z-index: -1;
+  content: '';
+  display: block;
+  border: 5px solid #2980b9;
+}
+.ribbon span {
+  position: absolute;
+  display: block;
+  width: 275px;
+  padding: 8px 0;
+  background-color: $gray-500;
+  box-shadow: 0 5px 10px rgba(0,0,0,.1);
+  color: #fff;
+  font: 700 10px/1 'Lato', sans-serif;
+  text-shadow: 0 1px 1px rgba(0,0,0,.2);
+  text-transform: uppercase;
+  text-align: center;
+}
+
+/* top left*/
+.ribbon-top-left {
+  top: -10px;
+  left: -10px;
+}
+.ribbon-top-left::before,
+.ribbon-top-left::after {
+  border-top-color: transparent;
+  border-left-color: transparent;
+}
+.ribbon-top-left::before {
+  top: 0;
+  right: 0;
+}
+.ribbon-top-left::after {
+  bottom: 0;
+  left: 0;
+}
+.ribbon-top-left span {
+  right: -25px;
+  top: 30px;
+  transform: rotate(-45deg);
+}

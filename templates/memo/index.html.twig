@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Memo index{% endblock %}
+
+{% block body %}
+    <h1>Memo index</h1>
+    <nav class="nav flex-column">
+        <a class="nav-link active" href="#">Active</a>
+        <a class="nav-link" href="#">Link</a>
+        <a class="nav-link" href="#">Link</a>
+        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+    </nav>
+
+{#    <table class="table">#}
+{#        <thead>#}
+{#            <tr>#}
+{#                <th>Id</th>#}
+{#                <th>Title</th>#}
+{#                <th>Content</th>#}
+{#                <th>Date</th>#}
+{#                <th>Location</th>#}
+{#                <th>actions</th>#}
+{#            </tr>#}
+{#        </thead>#}
+{#        <tbody>#}
+{#        {% for memo in memos %}#}
+{#            <tr>#}
+{#                <td>{{ memo.id }}</td>#}
+{#                <td>{{ memo.Title }}</td>#}
+{#                <td>{{ memo.Content }}</td>#}
+{#                <td>{{ memo.Date ? memo.Date|date('Y-m-d H:i:s') : '' }}</td>#}
+{#                <td>{{ memo.Location }}</td>#}
+{#                <td>#}
+{#                    <a href="{{ path('memo_show', {'id': memo.id}) }}">show</a>#}
+{#                    <a href="{{ path('memo_edit', {'id': memo.id}) }}">edit</a>#}
+{#                </td>#}
+{#            </tr>#}
+{#        {% else %}#}
+{#            <tr>#}
+{#                <td colspan="6">no records found</td>#}
+{#            </tr>#}
+{#        {% endfor %}#}
+{#        </tbody>#}
+{#    </table>#}
+
+    <a href="{{ path('memo_new') }}">Create new</a>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends 'layout/base.html.twig' %}
+{% block body %}
+    <div class="container-fluid">
+        <div class="row mb-2 mb-xl-3" style="text-align: center;display: block;">
+            <div class="col-auto d-none d-sm-block">
+                <h1 class="mt-4">{% block content_header %}{% endblock %}</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xl-2"></div>
+            <div class="col-xl-8">
+                <div class="card mb-4">
+                    {% if block("card_header") is defined %}
+                        <div class="card-header">
+                            {{ block('card_header')|raw }}
+                        </div>
+                    {% endif %}
+                    <div class="card-body">
+                        {% block card_body %}{% endblock %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-2"></div>
+        </div>
+    </div>
+{% endblock %}

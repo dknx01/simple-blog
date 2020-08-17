@@ -1,0 +1,22 @@
+{% extends 'layout/conatiner_fluid.html.twig' %}
+
+{% block title %}{{ name }}{% endblock %}
+{% block content_header %}{{ name }}{% endblock %}
+
+{% block card_header %}
+<i class="fa fa-file mr-1"></i>M{{ 'pages.memo_files_delete'|trans }}
+{% endblock %}
+
+{% block card_body %}
+    <style>
+        .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+        .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+    </style>
+    <div class="alert alert-danger" role="alert">
+        <h4 class="alert-heading">Löschen von {{ filename }}</h4>
+        <p>Soll <span class="font-weight-bold">{{ filename }}</span> wirklich gelöscht werden?</p>
+        <hr>
+        <p class="mb-0"><a href="{{ path('memo-delete', {path: filename|url_encode, force: true}) }}" class="btn btn-danger btn-lg" role="button" >Endgültig löschen</a></p>
+    </div>
+
+{% endblock %}

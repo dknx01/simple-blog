@@ -1,0 +1,29 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block title %}{{controller_name}}{% endblock %}
+
+{% block body %}
+
+        <div class="container-fluid">
+                <div class="row mb-2 mb-xl-3" style="text-align: center;display: block;">
+                        <div class="col-auto d-none d-sm-block">
+                                <h1 class="mt-4"></h1>
+                        </div>
+                </div>
+                <div class="row">
+                        <div class="col-xl-2"></div>
+                        <div class="col-xl-8">
+                                <div class="card mb-4">
+                                        <div class="card-header">
+                                                {{ 'pages.linklist'|trans }}
+                                        </div>
+                                        <div class="card-body">
+                                                {{ content.content|raw }}
+                                        </div>
+                                </div>
+                        </div>
+                        <div class="col-xl-2"></div>
+                </div>
+        </div>
+
+{% endblock %}

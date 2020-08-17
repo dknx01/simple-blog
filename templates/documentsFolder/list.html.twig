@@ -1,0 +1,133 @@
+{% extends 'layout/conatiner_fluid.html.twig' %}
+
+{% block content_header %}Dokumentenordner{% endblock %}
+{% block card_body %}
+    <div class="tree ">
+        <ul>
+            <li><span><a style="color:#000; text-decoration:none;" data-toggle="collapse" href="#Dokumente" aria-expanded="true" aria-controls="Dokumente"><i class="collapsed"><i class="fas fa-folder"></i></i>
+                <i class="expanded"><i class="far fa-folder-open"></i></i> Dokumente</a></span>
+                <div id="Dokumente" class="collapse show">
+                    <ul>
+                        <li><span><i class="fas fa-folder-plus"></i><a href="{{ path('document_folder_new', {path: '/'|url_encode}) }}"> Neuer Ordner</a></span>
+                            {% for folder in folders %}
+                                {{ _self.subFolders(folder) }}
+                            {% endfor %}
+                    </ul>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+{#    <div class="tree ">#}
+{#        <ul>#}
+
+{#            <li><span><a style="color:#000; text-decoration:none;" data-toggle="collapse" href="#Web"#}
+{#                         aria-expanded="true" aria-controls="Web"><i class="collapsed"><i class="fas fa-folder"></i></i>#}
+{#<i class="expanded"><i class="far fa-folder-open"></i></i> Web</a></span>#}
+{#                <div id="Web" class="collapse show">#}
+{#                    <ul>#}
+{#                        <li><span><i class="far fa-file"></i><a href="#!"> Link 1</a></span></li>#}
+{#                        <li><span><a style="color:#000; text-decoration:none;" data-toggle="collapse" href="#page1"#}
+{#                                     aria-expanded="false" aria-controls="page1"><i class="collapsed"><i#}
+{#                                                class="fas fa-folder"></i></i>#}
+{#<i class="expanded"><i class="far fa-folder-open"></i></i> Page 1</a></span>#}
+{#                            <ul>#}
+{#                                <div id="page1" class="collapse">#}
+{#                                    <li><span><i class="far fa-file"></i><a href="#!"> Link 1</a></span></li>#}
+{#                                    <li><span><i class="far fa-file"></i><a href="#!"> Link 2</a></span></li>#}
+{#                                    <li><span><i class="far fa-file"></i><a href="#!"> Link 3</a></span></li>#}
+{#                                    <li><span><i class="far fa-file"></i><a href="#!"> Link 4</a></span></li>#}
+{#                                </div>#}
+{#                            </ul>#}
+{#                        </li>#}
+
+
+{#                        <li><span><a style="color:#000; text-decoration:none;" data-toggle="collapse" href="#Page2"#}
+{#                                     aria-expanded="false" aria-controls="Page2"><i class="collapsed"><i#}
+{#                                                class="fas fa-folder"></i></i>#}
+{#<i class="expanded"><i class="far fa-folder-open"></i></i> Page 2</a></span>#}
+{#                            <ul>#}
+{#                                <div id="Page2" class="collapse">#}
+{#                                    <li><span><a style="color:#000; text-decoration:none;" data-toggle="collapse"#}
+{#                                                 href="#folder1" aria-expanded="false" aria-controls="folder1"><i#}
+{#                                                        class="collapsed"><i class="fas fa-folder"></i></i>#}
+{#<i class="expanded"><i class="far fa-folder-open"></i></i> Folder 1</a></span>#}
+{#                                        <ul>#}
+{#                                            <div id="folder1" class="collapse">#}
+{#                                                <li><span><i class="far fa-file"></i><a href="#!"> Link 1</a></span>#}
+{#                                                </li>#}
+{#                                                <li><span><i class="far fa-file"></i><a href="#!"> Link 2</a></span>#}
+{#                                                </li>#}
+{#                                                <li><span><i class="far fa-file"></i><a href="#!"> Link 3</a></span> <a#}
+{#                                                            href="#!">& More Link</a></li>#}
+{#                                            </div>#}
+{#                                        </ul>#}
+{#                                    </li>#}
+
+{#                                    <li><span><a style="color:#000; text-decoration:none;" data-toggle="collapse"#}
+{#                                                 href="#folder2" aria-expanded="false" aria-controls="folder2"><i#}
+{#                                                        class="collapsed"><i class="fas fa-folder"></i></i>#}
+{#<i class="expanded"><i class="far fa-folder-open"></i></i> Folder 2</a></span>#}
+{#                                        <ul>#}
+{#                                            <div id="folder2" class="collapse">#}
+{#                                                <li><span><i class="far fa-file"></i><a href="#!"> Link 1</a></span>#}
+{#                                                </li>#}
+{#                                                <li><span><i class="far fa-file"></i><a href="#!"> Link 2</a></span>#}
+{#                                                </li>#}
+{#                                                <li><span><i class="far fa-file"></i><a href="#!"> Link 3</a></span> <a#}
+{#                                                            href="#!">& More Link</a></li>#}
+{#                                            </div>#}
+{#                                        </ul>#}
+{#                                    </li>#}
+
+{#                                    <li><span><a style="color:#000; text-decoration:none;" data-toggle="collapse"#}
+{#                                                 href="#folder3" aria-expanded="false" aria-controls="folder3"><i#}
+{#                                                        class="collapsed"><i class="fas fa-folder"></i></i>#}
+{#<i class="expanded"><i class="far fa-folder-open"></i></i> Folder 3</a></span>#}
+{#                                        <ul>#}
+{#                                            <div id="folder3" class="collapse">#}
+{#                                                <li><span><i class="far fa-file"></i><a href="#!"> Link</a></span> <a#}
+{#                                                            href="#!">& More Link</a></li>#}
+{#                                            </div>#}
+{#                                        </ul>#}
+{#                                    </li>#}
+
+{#                                    <li><span><i class="far fa-file"></i><a href="#!"> Link</a></span></li>#}
+
+{#                                </div>#}
+{#                            </ul>#}
+{#                        </li>#}
+
+
+{#                        #}{# <li><span><i class="far fa-file"></i><a href="#!"> Link 2</a></span></li> #}
+
+
+{#                    </ul>#}
+{#                </div>#}
+{#            </li>#}
+{#        </ul>#}
+
+{#    </div>#}
+
+{% endblock %}
+
+{% macro subFolders(currentFolder) %}
+    <li><span>
+        <a style="color:#000; text-decoration:none;" data-toggle="collapse" href="#{{ currentFolder.name_slug }}" aria-expanded="false" aria-controls="{{ currentFolder.name_slug }}"><i class="collapsed"><i class="fas fa-folder"></i></i>
+        <i class="expanded"><i class="far fa-folder-open"></i></i>{{ currentFolder.name }}</a>
+        </span>
+        <ul>
+            <div id="{{ currentFolder.name_slug }}" class="collapse">
+                <li><span><i class="fas fa-folder-plus"></i><a
+                                href="{{ path('document_folder_new', {path: currentFolder.path|url_encode}) }}"> Neuer Ordner</a></span>
+                </li>
+            {% if not currentFolder.empty %}
+                {% for subfolder in currentFolder.subFolders %}
+                    {{ _self.subFolders(subfolder) }}
+                {% endfor %}
+            {% endif %}
+            </div>
+        </ul>
+
+    </li>
+{% endmacro %}

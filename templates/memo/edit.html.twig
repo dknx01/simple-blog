@@ -1,0 +1,51 @@
+{% extends 'layout/conatiner_fluid.html.twig' %}
+
+{% block title %}Edit Memo{% endblock %}
+
+{% block content_header %}{{ 'pages.memo_files_edit'|trans }}{% endblock %}
+
+{% block card_body %}
+    {% if errors %}
+    {% for error in errors %}
+        <div class="alert alert-danger">{{ error }}</div>
+    {% endfor %}
+    {% endif %}
+    {{ include('memo/_form.html.twig') }}
+{% endblock %}
+
+{% block javascripts %}
+    <link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
+    <script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
+    <script>
+        var easyMDE = new EasyMDE({
+            autofocus: true,
+            autosave: {
+                enabled: true,
+                uniqueId: "{{ uuid() }}",
+                delay: 1000,
+                submit_delay: 5000,
+                timeFormat: {
+                    locale: 'en-US',
+                    format: {
+                        year: 'numeric',
+                        month: 'long',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                    },
+                },
+                text: "Autosaved: "
+            },
+            toolbar: [
+                "bold", "italic", "strikethrough", "|",
+                "heading", "heading-smaller", "heading-bigger", "|",
+                "quote", "code", "|",
+                "unordered-list", "ordered-list", "|",
+                "link", "image", "table", "horizontal-rule", "|",
+                "preview", "side-by-side", "|",
+                "guide"
+            ]
+        });
+    </script>
+    {{ parent() }}
+{% endblock %}

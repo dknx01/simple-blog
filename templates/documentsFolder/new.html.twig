@@ -1,0 +1,35 @@
+{% extends 'layout/conatiner_fluid.html.twig' %}
+
+{% block title %}{{ name }}{% endblock %}
+
+{% block body %}
+    <div class="row justify-content-center">
+        <div class="col-lg-5">
+            <div class="card shadow-lg border-0 rounded-lg mt-5">
+                <div class="card-header"><h3 class="text-center font-weight-light my-4">Neuen Ordner anlegen</h3></div>
+                <div class="card-body">
+                    Unterhalb von: {{ newFolder.parent }}
+                    <form method="post">
+                        <div class="form-group">
+                            {% if errors %}
+                                {% for error in errors %}
+                                <div class="alert alert-danger">{{ error }}</div>
+                                {% endfor %}
+                            {% endif %}
+                            <label class="small mb-1" for="inputFoldername">Ordnername</label>
+                            <input type="text" value="{{ newFolder.foldername }}" name="foldername" id="inputFoldername" class="form-control py-4" required autofocus>
+
+                            <input type="hidden" name="_csrf_token" value="{{ csrf_token('new_folder') }}" >
+                            <input type="hidden" name="parent" value="{{ newFolder.parent }}" >
+                            </div>
+                            <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
+                                <button class="btn btn-lg btn-partei" type="submit">
+                                    Speichern
+                                </button>
+                            </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

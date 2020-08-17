@@ -1,0 +1,41 @@
+{% extends 'layout/conatiner_fluid.html.twig' %}
+
+{% block title %}{{ name }}{% endblock %}
+{% block content_header %}{{ name }}{% endblock %}
+
+{% block card_header %}
+<i class="fa fa-file mr-1"></i>{{ 'pages.memo_files'|trans }}
+{% endblock %}
+
+{% block card_body %}
+    <style>
+        .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+        .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+    </style>
+
+        <ul>
+            {% for data in content.directories() %}
+                <li><a href="{{path('documents', {path: data.path|url_encode})  }}"><i class="fas fa-folder"></i> {{ data.FileName }}</a></li>
+            {% endfor %}
+            {% for data in content.files %}
+                {% if data.downloadable  %}
+                    <li><a href="{{ path('file', {path: [ data.path, '/', data.fileName]|join|url_encode}) }}" target="_blank" download="{{ data.ReadableFileName }}">{{ _self.filetype(data) }} {{ data.ReadableFileName }}</a></li>
+                {% else %}
+                    <li><a href="{{ path('memo', {path: [data.path, '/', data.fileName]|join|url_encode}) }}">{{ _self.filetype(data) }}{{ data.ReadableFileName }}</a></li>
+                {% endif %}
+            {% endfor %}
+
+
+        </ul>
+
+{% endblock %}
+
+{% macro filetype(data)%}
+    {% set class='fa-file' %}
+    {% if data.extension is constant('App\\Entity\\MemoContent::PDF') %}
+        {% set class='fa-file-pdf' %}
+    {% elseif data.extension is constant('App\\Entity\\MemoContent::DOCX') %}
+        {% set class='fa-file-word' %}
+    {% endif %}
+    <i class="fas {{ class }}"></i>
+{% endmacro %}

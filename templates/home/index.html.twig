@@ -1,0 +1,25 @@
+{% extends 'layout/conatiner_fluid.html.twig' %}
+
+{% block title %}{{ name }}{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+
+<div class="example-wrapper">
+    {{ 'home.headline'|trans }}
+    <ul>
+        {% for name, entry in menue %}
+            <li >
+                {% if entry.arguments is not null %}
+                    <a href="{{ path(entry.route, entry.arguments) }}">{{ ( 'menu.' ~ name)|trans }}</a>
+                {% else %}
+                    <a href="{{ path(entry.route) }}">{{ ( 'menu.' ~ name)|trans }}</a>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

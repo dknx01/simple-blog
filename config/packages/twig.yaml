@@ -1,2 +1,17 @@
 twig:
     default_path: '%kernel.project_dir%/templates'
+    form_themes: ['bootstrap_4_layout.html.twig']
+    globals:
+        menue:
+            'lv_stammtisch':
+                route: 'list-stammtische'
+                arguments: {'path': 'LV'}
+            'ov_stammtisch':
+                route: 'list-stammtische'
+                arguments: {'path': 'OV TK'}
+            'dokumente':
+                route: 'documents'
+                arguments: ~
+            'linksammlung':
+                route: 'link-collection'
+                arguments: ~

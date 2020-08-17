@@ -1,0 +1,7 @@
+# {{ memo.title }}
+
+`Datum: {{ memo.date|date('d.m.Y H:i') }}`
+
+`Ort: {{ memo.location }}`
+
+{{ memo.content|raw }}
