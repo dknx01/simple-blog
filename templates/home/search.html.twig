@@ -1,0 +1,29 @@
+{% extends 'layout/conatiner_fluid.html.twig' %}
+
+{% block title %}{{ name }}{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+
+<div class="example-wrapper">
+    SucheFeld
+    Suchergebnisse
+    <div class="list-group">
+        {% if result|length == 0 %}
+            <div class="alert alert-warning" role="alert">
+                Keine Ergebnisse gefunden
+            </div>
+        {% else %}
+            {% for name, path in result %}
+                <a href="#{{ path|url_encode }}" class="list-group-item list-group-item-action">
+                    {{ name }}
+            </a>
+            {% endfor %}
+        {% endif %}
+    </div>
+    </ul>
+</div>
+{% endblock %}

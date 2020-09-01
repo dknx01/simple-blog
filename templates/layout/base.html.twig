@@ -22,7 +22,7 @@
     {% if is_granted('ROLE_ADMIN') %}
         {% include 'layout/navi_side.html.twig' %}
     {% endif %}
-    <div id="layoutSidenav_content"{% if not is_granted('ROLE_ADMIN') %} style="padding-left: unset" {% endif %}>
+    <div id="layoutSidenav_content">
         <main>
             {% block body %}The Body{% endblock %}
         </main>

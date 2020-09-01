@@ -42,6 +42,7 @@ class MarkdownReader
     public function refreshContent(string $path): void
     {
         $key = md5($path);
+        $this->cache->delete($key);
         $this->cache->get(
             $key,
             $this->parseFile($path)

@@ -119,6 +119,7 @@ class MemoUpload extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $repository->updateMemo($memoEdit);
+                $filePath = $this->dataPath . $memoEdit->getPath();
                 $markdownReader->refreshContent($filePath);
             } catch (\Exception $exception) {
                 $errors[] = $this->sanitizeErrorMessage($exception);

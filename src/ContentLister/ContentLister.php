@@ -85,8 +85,8 @@ class ContentLister
     private function readDirectory($path): \Closure
     {
         return function(ItemInterface $item) use ($path) {
-            //$item->expiresAfter(3600);
-            $item->expiresAfter(1);
+            $item->expiresAfter(3600);
+            //$item->expiresAfter(1);
             $contentCollection = new DirectoryContentCollection();
             $reader = new Finder();
             foreach ((new Finder())->in($this->dataPath . $path)->directories()->sortByName() as $folder) {

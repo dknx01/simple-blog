@@ -6,6 +6,7 @@
 parameters:
     data_folder: 'data/Partei'
     link_collection: '/Anderes/Linksammlung.md'
+    newbee: '/Anderes/neu_dabei.md'
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -28,6 +29,7 @@ services:
         arguments:
             $dataPath: '%kernel.project_dir%/%data_folder%'
             $linkCollectionPath: '%link_collection%'
+            $newbeePath: '%newbee%'
 
     App\Controller\MemoUpload:
         arguments:
@@ -37,7 +39,15 @@ services:
         arguments:
             $linkCollectionPath: '%kernel.project_dir%/%data_folder%/%link_collection%'
 
+    App\Controller\NewbeeController:
+        arguments:
+            $path: '%kernel.project_dir%/%data_folder%/%newbee%'
+
     App\ContentLister\ContentLister:
+        arguments:
+            $dataPath: '%kernel.project_dir%/%data_folder%'
+
+    App\ContentLister\ContentSearch:
         arguments:
             $dataPath: '%kernel.project_dir%/%data_folder%'
 
@@ -51,3 +61,7 @@ services:
     App\Controller\DocumentFolderController:
         arguments:
             $dataPath: '%kernel.project_dir%/%data_folder%/Dokumente'
+
+    App\Controller\CacheController:
+        arguments:
+            $cacheDir: '%kernel.cache_dir%'

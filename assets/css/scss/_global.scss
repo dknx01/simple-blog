@@ -122,3 +122,9 @@ body {
   top: 30px;
   transform: rotate(-45deg);
 }
+@media (max-width: 553px){
+
+  .custom-brand{
+    display: none;
+  }
+}

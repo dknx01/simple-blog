@@ -25,7 +25,7 @@
                                         </div>
                                 {% else %}
                                         <div class="card-header">
-                                                {{ content.path }}
+                                                {{ content.path }} <a title="Download als PDF" target="_blank" href="{{ path('pdf', {path: content.path|url_encode}) }}"><i class="fas fa-download"></i></a>
                                         </div>
                                         <div class="card-body">
                                                 {{ content.content|raw }}

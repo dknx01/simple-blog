@@ -40,7 +40,7 @@ class MemoContent
     {
         return !$this->isMarkdown()
             ? $this->getPdfPath()
-            : $this->path->replace('_', ' ')->replace('-', ' ')->beforeLast('.')->toString();
+            : $this->path->beforeLast('.')->toString();
     }
 
     public function isMarkdown(): bool

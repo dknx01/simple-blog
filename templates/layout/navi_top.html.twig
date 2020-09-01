@@ -1,11 +1,12 @@
 <nav class="sb-topnav navbar navbar-expand-md navbar-light bg-light">
-    <div class="ribbon ribbon-top-left"><span>alpha</span></div>
+    <a href="{{ path('home') }}"><div class="ribbon ribbon-top-left"><span>alpha</span></div></a>
     <a class="navbar-brand" href="{{ path('home') }}"><img src="{{ asset('build/dp_ovtk_logo.png') }}" alt="Die PARTEI Treptow-Köpenick Logo"></a>
-    <span class="navbar-brand mb-0 h1">Unschlaue Seite</span>
-    {% if is_granted('ROLE_ADMIN') %}
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-brand mb-0 h1 custom-brand">Unschlaue Seite</span>
+
+        <button id="main_menu" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
+    {% if is_granted('ROLE_ADMIN') %}
         <button class="btn btn-link btn-sm order-1 order-lg-0" id="sidebarToggle" href="#"><i class="fas fa-bars"></i></button>
     {% endif %}
     <div class="collapse navbar-collapse" style="background-color: #dee2e6 !important;" id="navbarSupportedContent">

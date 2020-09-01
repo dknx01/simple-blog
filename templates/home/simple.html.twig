@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+    <link rel="icon" href="{{ asset('build/cropped-partei-icon-32x32.png') }}" sizes="32x32" />
+    <link rel="icon" href="{{ asset('build/cropped-partei-icon-192x192.png') }}" sizes="192x192" />
+    <link rel="apple-touch-icon-precomposed" href="{{ asset('build/cropped-partei-icon-180x180.png') }}" />
+    <title>{% block title %}Hurra!{% endblock %}</title>
+    {% block stylesheets %}
+        {{ encore_entry_link_tags('app') }}
+    {% endblock %}
+    {#    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js"#}
+    {#            crossorigin="anonymous"></script>#}
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row mb-2 mb-xl-3" style="text-align: center;display: block;">
+        <div class="col-auto d-none d-sm-block">
+            <h1 class="mt-4">{{ title }}</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-2"></div>
+        <div class="col-xl-8">
+            <div class="card mb-4">
+                <div class="card-body">
+                    {{ content|raw }}
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-2"></div>
+    </div>
+</div>
+
+{% block javascripts %}
+    {{ encore_entry_script_tags('app') }}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+{% endblock %}
+</body>
+</html>

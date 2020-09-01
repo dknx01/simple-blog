@@ -40,7 +40,6 @@ class MemoRepository
 
     public function updateMemo(MemoEdit $memoEdit): void
     {
-        dump($this->path . $memoEdit->getPath());
         file_put_contents(
             $this->path . $memoEdit->getPath(),
             $this->twig->render('memo/link-collection-template.html.twig', ['memo' => $memoEdit])
