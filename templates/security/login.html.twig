@@ -6,24 +6,24 @@
     <div class="row justify-content-center">
         <div class="col-lg-5">
             <div class="card shadow-lg border-0 rounded-lg mt-5">
-                <div class="card-header"><h3 class="text-center font-weight-light my-4">Login</h3></div>
+                <div class="card-header"><h3 class="text-center font-weight-light my-4">{{ 'login'|trans({}, 'security') }}</h3></div>
                 <div class="card-body">
                     <form method="post">
                         <div class="form-group">
                                 {% if error %}
-                                    <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security_old') }}</div>
+                                    <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
                                 {% endif %}
                                 {% if app.user %}
                                     <div class="mb-3">
-                                        Du bist eingeloggt als {{ app.user.username }}, <a href="{{ path('app_logout') }}">Logout</a>
+                                        {{ 'logged_in_as'|trans({'%user_name%': app.user.username}, 'security') }}, <a href="{{ path('app_logout') }}">{{ 'logout'|trans({}, 'security') }}</a>
                                     </div>
                                 {% endif %}
-                            <label class="small mb-1" for="inputUsername">Username</label>
+                            <label class="small mb-1" for="inputUsername">{{ 'username'|trans({}, 'security') }}</label>
                             {#                        <input class="form-control py-4" id="inputUsername" type="email" placeholder="Enter email address" />#}
                             <input type="text" value="{{ last_username }}" name="username" id="inputUsername" class="form-control py-4" required autofocus>
                         </div>
                         <div class="form-group">
-                            <label class="small mb-1" for="inputPassword">Password</label>
+                            <label class="small mb-1" for="inputPassword">{{ 'password'|trans({}, 'security') }}</label>
                             <input type="password" name="password" id="inputPassword" class="form-control py-4" required>
                             {#                        <input class="form-control py-4" id="inputPassword" type="password" placeholder="Enter password" />#}
                         </div>
@@ -33,14 +33,14 @@
                         <div class="form-group">
                             <div class="custom-control custom-checkbox">
                                 <input class="custom-control-input" id="remember_me" name="_remember_me" type="checkbox" />
-                                <label class="custom-control-label" for="remember_me">Eingeloggt bleiben</label>
+                                <label class="custom-control-label" for="remember_me">{{ 'remember_me'|trans({}, 'security') }}</label>
                             </div>
                         </div>
                         <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
                             {#                    <a class="small" href="password.html">Forgot Password?</a>#}
                             {#                        <a class="btn btn-primary" href="index.html">Login</a>#}
                             <button class="btn btn-lg btn-partei" type="submit">
-                                Einloggen
+                                {{ 'logging_in'|trans({}, 'security') }}
                             </button>
                         </div>
                     </form>

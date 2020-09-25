@@ -4,7 +4,7 @@
 {% block content_header %}{{ name }}{% endblock %}
 
 {% block card_header %}
-<i class="fa fa-file mr-1"></i>{{ 'pages.memo_files'|trans }}
+<i class="fa fa-file mr-1"></i>{{ 'memo.files.headline'|trans({}, 'pages') }}
 {% endblock %}
 
 {% block card_body %}
@@ -16,7 +16,7 @@
         <ul>
             {% for data in content %}
                 <li><a href="{{path('memo-edit', {path: data|url_encode})  }}">{{ data }}</a>
-                    <a href="{{ path('memo-delete', {path: data|url_encode}) }}"> <span class="badge badge-danger badge-pill">Löschen</span></a>
+                    <a href="{{ path('memo-delete', {path: data|url_encode}) }}"> <span class="badge badge-danger badge-pill">{{ 'memo.delete.button'|trans({}, 'pages') }}</span></a>
                 </li>
             {% endfor %}
         </ul>

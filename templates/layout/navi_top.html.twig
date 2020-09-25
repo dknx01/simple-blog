@@ -1,7 +1,7 @@
 <nav class="sb-topnav navbar navbar-expand-md navbar-light bg-light">
-    <a href="{{ path('home') }}"><div class="ribbon ribbon-top-left"><span>alpha</span></div></a>
-    <a class="navbar-brand" href="{{ path('home') }}"><img src="{{ asset('build/dp_ovtk_logo.png') }}" alt="Die PARTEI Treptow-Köpenick Logo"></a>
-    <span class="navbar-brand mb-0 h1 custom-brand">Unschlaue Seite</span>
+    <a href="{{ path('home') }}"><div class="ribbon ribbon-top-left"><span>{{ 'version'|trans({}, 'menu') }}</span></div></a>
+    <a class="navbar-brand" href="{{ path('home') }}"><img src="{{ asset('build/dp_ovtk_logo.png') }}" alt="{{ 'logo_alt_text'|trans({}, 'menu') }}"></a>
+    <span class="navbar-brand mb-0 h1 custom-brand">{{ 'brand'|trans({}, 'menu') }}</span>
 
         <button id="main_menu" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -14,14 +14,23 @@
         {% for name, entry in menue %}
             <li class="nav-item">
                 {% if entry.arguments is not null %}
-                    <a class="nav-link-top nav-link" href="{{ path(entry.route, entry.arguments) }}">{{ ( 'menu.' ~ name)|trans }} <span class="sr-only"></span></a>
+                    <a class="nav-link-top nav-link" href="{{ path(entry.route, entry.arguments) }}">{{ ( name)|trans({}, 'menu') }} <span class="sr-only"></span></a>
                 {% else %}
-                    <a class="nav-link-top nav-link" href="{{ path(entry.route) }}">{{ ( 'menu.' ~ name)|trans }} <span class="sr-only"></span></a>
+                    <a class="nav-link-top nav-link" href="{{ path(entry.route) }}">{{ ( name)|trans({}, 'menu') }} <span class="sr-only"></span></a>
                 {% endif %}
             </li>
         {% endfor %}
     </ul>
 
+        <!-- Navbar Search-->
+        <form class="form-inline my-2 my-lg-0" method="post" action="{{ path('search') }}">
+            <div class="input-group">
+            <input class="form-control mr-sm-2" type="search" placeholder="suchen" aria-label="Suche" name="searchText" {% if searchText is defined %}value="{{ searchText }}" {% endif %}>
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('search') }}" >
+            <button class="btn btn-partei" type="submit"><i class="fas fa-search"></i></button>
+            </div>
+        </form>
+        <!-- Navbar-->
 
     <!-- Navbar Admin-->
     <ul class="navbar-nav d-md-inline-block form-inline ml-auto mr-0 mr-md-0 my-2 my-md-0">
@@ -31,9 +40,9 @@
                 {% if is_granted('IS_AUTHENTICATED_FULLY') %}
                     <a class="dropdown-item disabled">{{ app.user.username }}</a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="{{ path('app_logout') }}">Logout</a>
+                    <a class="dropdown-item" href="{{ path('app_logout') }}">{{ 'logout'|trans({}, 'menu') }}</a>
                 {% else %}
-                    <a class="dropdown-item" href="{{ path('app_login') }}">Login</a>
+                    <a class="dropdown-item" href="{{ path('app_login') }}">{{ 'login'|trans({}, 'menu') }}</a>
                 {% endif %}
             </div>
     </ul>

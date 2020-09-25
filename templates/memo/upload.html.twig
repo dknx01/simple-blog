@@ -1,7 +1,7 @@
 {% extends 'layout/conatiner_fluid.html.twig' %}
 
-{% block title %}{{ 'pages.memo_upload'|trans }}{% endblock %}
-{% block content_header %}{{ 'pages.memo_upload'|trans }}{% endblock %}
+{% block title %}{{ 'memo.upload'|trans({}, 'pages') }}{% endblock %}
+{% block content_header %}{{ 'memo.upload'|trans({}, 'pages') }}{% endblock %}
 
 {% block card_body %}
     {{ include('memo/_form.html.twig') }}

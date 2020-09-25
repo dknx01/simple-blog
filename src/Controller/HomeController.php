@@ -163,6 +163,7 @@ class HomeController extends AbstractController
 
     /**
      * @Route("/search/", name="search")
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
      * @param ContentSearch $contentSearch
      * @param Request $request
      * @return Response
@@ -185,7 +186,32 @@ class HomeController extends AbstractController
     }
 
     /**
+     * @Route("/search_result/{path}", name="search_result")
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     * @param string $path
+     * @return Response
+     */
+    public function searchResult(string $path, ContentSearch  $contentSearch): Response
+    {
+        $path = u(urldecode($path));
+        if ($path->afterLast('.')->toString() !== 'md') {
+            return $this->redirectToRoute('file', ['path' => urlencode($path->toString())]);
+        }
+        if ($path->startsWith('/Wiki')) {
+            return $this->redirectToRoute('wiki_show', ['path' => urlencode($path->after('/Wiki/')->beforeLast('.'))]);
+        }
+        if ($path->endsWith('Linksammlung.md')) {
+            return $this->redirectToRoute('link-collection');
+        }
+        if ($path->endsWith('neu_dabei.md')) {
+            return $this->redirectToRoute('newbees');
+        }
+        return $this->redirectToRoute('memo', ['path' => urlencode($path)]);
+    }
+
+    /**
      * @Route("/pdf/{path}", name="pdf")
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
      * @param string $path
      * @return Response
      */

@@ -1,46 +1,8 @@
-menu:
-  lv_stammtisch: LV Stammtische
-  ov_stammtisch: OV Stammtische
-  dokumente: Dokumente
-  linksammlung: Linksammlung
-  newbees: Neu dabei!?
-  memo:
-    new: Neues Stammtisch-Memo (Markdown)
-    linklist_edit: Linkliste bearbeiten
-    pdf_upload:  Upload PDF
-    document_list:  Dokumentenliste
-  new_document:  Neues Dokument
-  site_management: Seitenverwaltung
-  user:
-    headline: Benutzerverwaltung
-    overview: Benuzer
-    new: Neuer Benutzer
-  documents:
-    headline: Dokumentordner
-    new: Neuer Ordner
-  cache:
-    headline: Cache
-    clear_content: Inhaltscache leeren
-    clear_all: Gesamten Cache leeren
-
-footer:
-  copyright: Copyright &copy; Die Partei OV TK 2020
-  internal: Nur für den internen Gebrauch!
-
 home:
   headline: "Übersichten über Memos von LV- und OV-Stammtischen sind hier zu finden:"
-
-pages:
-  linklist: Linksammlung
-  newbee: Neu dabei!?
-  linklist_edit: Linksammlung bearbeiten
-  memo_files: Memos und Dateien
-  memo_files_delete: Memos und Dateien löschen
-  memo_files_edit: Memo bearbeiten
-  memo_new: Neues Memo
-  memo_upload: Upload Memo
-  user:
-    new: Benutzer anlegen
-    overview: Benutzerübersicht
-    delete: Benutzer löschen
-    edit: Benutzer bearbeiten
+save: 'Speichern'
+download_as_pdf: 'Download als PDF'
+hurray: 'Hurra!'
+delete: 'Löschen'
+edit: 'Bearbeiten'
+headline: 'Wiki'

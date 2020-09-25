@@ -69,7 +69,7 @@ class ContentSearch
     {
         $contentCollection = [];
 
-        foreach ((new Finder())->in($this->dataPath)->files()->name(['*.md', '*.ptxt'])->contains($content) as $file) {
+        foreach ((new Finder())->in($this->dataPath)->files()->name(['*.md', '*.ptxt'])->contains('~'.$content.'~i') as $file) {
             $contentCollection[] = new SearchResult(
                 $file->getBasename(),
                 $file->getFilename(),

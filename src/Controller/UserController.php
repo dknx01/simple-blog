@@ -19,7 +19,7 @@ class UserController extends AbstractController
 {
     /**
      * @Route("/benutzer/übersicht", name="user_list")
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     * @IsGranted("ROLE_ADMIN")
      * @param UserRepository $userRepository
      * @return Response
      */
@@ -30,7 +30,7 @@ class UserController extends AbstractController
 
     /**
      * @Route("/benutzer/bearbeiten/{id}", name="user_edit", methods={"GET","POST"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     * @IsGranted("ROLE_ADMIN")
      * @param int $id
      * @param UserRepository $userRepository
      * @param Request $request
@@ -60,7 +60,7 @@ class UserController extends AbstractController
 
     /**
      * @Route("/benutzer/neu", name="user_new")
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     * @IsGranted("ROLE_ADMIN")
      * @param UserRepository $userRepository
      * @param Request $request
      * @param UserPasswordEncoderInterface $passwordEncoder
@@ -92,7 +92,7 @@ class UserController extends AbstractController
 
     /**
      * @Route("/benutzer/loeschen/{id}", name="user_delete", methods={"GET"})
-     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     * @IsGranted("ROLE_ADMIN")
      * @param int $id
      * @param UserRepository $userRepository
      * @param Request $request

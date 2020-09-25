@@ -1,15 +1,15 @@
 {% extends 'layout/conatiner_fluid.html.twig' %}
 
-{% block content_header %}Dokumentenordner{% endblock %}
+{% block content_header %}{{ 'document_folder.header'|trans({}, 'pages') }}{% endblock %}
 {% block card_body %}
     <div class="tree ">
         <ul>
             <li><span><a style="color:#000; text-decoration:none;" data-toggle="collapse" href="#Dokumente" aria-expanded="true" aria-controls="Dokumente"><i class="collapsed"><i class="fas fa-folder"></i></i>
-                <i class="expanded"><i class="far fa-folder-open"></i></i> Dokumente</a></span>
+                <i class="expanded"><i class="far fa-folder-open"></i></i> {{ 'document_folder.documents'|trans({}, 'pages') }}</a></span>
                 <div id="Dokumente" class="collapse show">
                     <ul>
-                        <li><span><i class="fas fa-folder-plus"></i><a href="{{ path('document_folder_new', {path: '/'|url_encode}) }}"> Neuer Ordner</a></span>
-                        <li><span><i class="fas fa-file-medical"></i><a href="{{ path('new-document', {path: '/'|url_encode}) }}"> {{ 'menu.new_document'|trans }}</a></span>
+                        <li><span><i class="fas fa-folder-plus"></i><a href="{{ path('document_folder_new', {path: '/'|url_encode}) }}"> {{ 'document_folder.new_folder'|trans({}, 'pages') }}</a></span>
+                        <li><span><i class="fas fa-file-medical"></i><a href="{{ path('new-document', {path: '/'|url_encode}) }}"> {{ 'document_folder.new_document'|trans({}, 'pages') }}</a></span>
                             {% for folder in folders %}
                                 {{ _self.subFolders(folder) }}
                             {% endfor %}
@@ -120,9 +120,9 @@
         <ul>
             <div id="{{ currentFolder.name_slug }}" class="collapse">
                 <li><span><i class="fas fa-folder-plus"></i><a
-                                href="{{ path('document_folder_new', {path: currentFolder.path|url_encode}) }}"> Neuer Ordner</a></span>
+                                href="{{ path('document_folder_new', {path: currentFolder.path|url_encode}) }}"> {{ 'document_folder.new_folder'|trans({}, 'pages') }}</a></span>
                 </li><li><span><i class="fas fa-file-medical"></i><a
-                                href="{{ path('new-document', {path: currentFolder.path|url_encode}) }}"> {{ 'menu.new_document'|trans }}</a></span>
+                                href="{{ path('new-document', {path: currentFolder.path|url_encode}) }}"> {{ 'document_folder.new_document'|trans({}, 'pages') }}</a></span>
                 </li>
             {% if not currentFolder.empty %}
                 {% for subfolder in currentFolder.subFolders %}

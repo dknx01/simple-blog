@@ -1,16 +1,13 @@
 {% extends 'layout/conatiner_fluid.html.twig' %}
 
-{% block title %}{{ 'memo.files.title'|trans({}, 'pages') }}{% endblock %}
+{% block title %}{{ 'new_entry'|trans({}, 'wiki') }}{% endblock %}
 
-{% block content_header %}{{ 'memo.files.edit'|trans({}, 'pages') }}{% endblock %}
-
+{% block content_header %}{{ 'new_entry'|trans({}, 'wiki') }}{% endblock %}
 {% block card_body %}
-    {% if errors %}
-    {% for error in errors %}
-        <div class="alert alert-danger">{{ error }}</div>
-    {% endfor %}
-    {% endif %}
-    {{ include('memo/_form.html.twig') }}
+
+    {{ include('wiki/_form.html.twig') }}
+
+    <a href="{{ path('wiki_index') }}">{{ 'back_to_list'|trans({}, 'wiki') }}</a>
 {% endblock %}
 
 {% block javascripts %}

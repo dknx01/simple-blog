@@ -9,7 +9,7 @@
     <link rel="icon" href="{{ asset('build/cropped-partei-icon-32x32.png') }}" sizes="32x32" />
     <link rel="icon" href="{{ asset('build/cropped-partei-icon-192x192.png') }}" sizes="192x192" />
     <link rel="apple-touch-icon-precomposed" href="{{ asset('build/cropped-partei-icon-180x180.png') }}" />
-    <title>{% block title %}Hurra!{% endblock %}</title>
+    <title>{% block title %}{{ 'hurray'|trans }}{% endblock %}</title>
     {% block stylesheets %}
         {{ encore_entry_link_tags('app') }}
     {% endblock %}

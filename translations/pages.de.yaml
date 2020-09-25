@@ -1,0 +1,36 @@
+linklist:
+  name: 'Linksammlung'
+  edit: 'Linksammlung bearbeiten'
+newbee: 'Neu dabei!?'
+memo:
+  files:
+    headline: 'Memos und Dateien'
+    delete: 'Memos und Dateien löschen'
+    edit: 'Memo bearbeiten'
+    title: 'Edit Memo'
+  new: 'Neues Memo'
+  upload: 'Upload Memo'
+  delete:
+    button: 'Löschen'
+    info: 'Löschen von %file_name%'
+    really: 'Endgültig löschen'
+    question: 'Soll <span class="font-weight-bold">%filename%</span> wirklich gelöscht werden?'
+  headline: 'Memo'
+user:
+  new: 'Benutzer anlegen'
+  overview: 'Benutzerübersicht'
+  delete: 'Benutzer löschen'
+  edit: 'Benutzer bearbeiten'
+  form:
+    username: 'Username'
+    passwort: 'Passwort'
+    admin: 'Admin'
+document_folder:
+  header: 'Dokumentenordner'
+  documents: 'Dokumente'
+  new_folder: 'Neuer Ordner'
+  new_document: 'Neues Dokument'
+  new_folder_page:
+    headline: 'Neuen Ordner anlegen'
+    under: 'Unterhalb von: %parent%'
+    name: 'Ordnername'
