@@ -9,21 +9,46 @@
 </style>
 
 <div class="example-wrapper">
-    SucheFeld
-    Suchergebnisse
-    <div class="list-group">
-        {% if result|length == 0 %}
-            <div class="alert alert-warning" role="alert">
-                Keine Ergebnisse gefunden
-            </div>
-        {% else %}
-            {% for name, path in result %}
-                <a href="#{{ path|url_encode }}" class="list-group-item list-group-item-action">
-                    {{ name }}
-            </a>
-            {% endfor %}
-        {% endif %}
+    <div class="card card">
+        <div class="card-header">Suche</div>
+        <div class="card-body">
+            <form method="post">
+                <div class="row card-text">
+                    <div class="col col-md-10 col-sm-10">
+                        <input type="text" value="{{ searchText }}" name="searchText" id="inputSearchText" class="form-control py-4" required autofocus>
+                    </div>
+                    <div class="col">
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('search') }}" >
+                        <button class="btn btn-lg btn-partei" type="submit">
+                            Suchen
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
-    </ul>
+
+    <div style="height: 30px"></div>
+    {% if app.request.method == "POST" %}
+    <div class="card card">
+        <div class="card-header">Suchergebnisse</div>
+        <div class="card-body">
+            <div class="list-group">
+
+                {% if result|length == 0 %}
+                    <div class="alert alert-warning" role="alert">
+                        Keine Ergebnisse gefunden
+                    </div>
+                {% else %}
+                    {% for result in result %}
+                        <a href="#{{ result.path|url_encode }}" class="list-group-item list-group-item-action">
+                            {{ result.name }}
+                    </a>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
 </div>
 {% endblock %}

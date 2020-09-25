@@ -10,6 +10,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Annotation\Route;
@@ -163,23 +164,24 @@ class HomeController extends AbstractController
     /**
      * @Route("/search/", name="search")
      * @param ContentSearch $contentSearch
+     * @param Request $request
      * @return Response
      */
-    public function search(ContentSearch  $contentSearch): Response
+    public function search(ContentSearch  $contentSearch, Request $request): Response
     {
         $result = [];
+        $searchText = '';
+        if ($request->getMethod() === 'POST'
+            && $this->isCsrfTokenValid('search', $request->request->get('_csrf_token'))
+        ) {
+            $searchText = $request->request->get('searchText');
+            $folderFiles = $contentSearch->listContent($searchText);
 
-        $folderFiles = $contentSearch->listContent();
-
-        foreach (preg_grep('/.*FOLIO.*/', array_keys($folderFiles)) as $key) {
-            $result[$key] = $folderFiles[$key]->getPath();
+            $content = $contentSearch->findContent($searchText);
+            $result = array_merge($folderFiles, $content);
         }
 
-        $finder = (new Finder())->in($this->dataPath)->contains('1234567898765432123578909643');
-        foreach ($finder as $found) {
-            $result[$found->getFilename()] = u($found->getPathname())->replace($this->dataPath, '')->toString();
-        }
-        return $this->render('home/search.html.twig', ['name' => 'fdsfs', 'result' => $result]);
+        return $this->render('home/search.html.twig', ['name' => 'Suche: ' . $searchText, 'result' => $result, 'searchText' => $searchText]);
     }
 
     /**
