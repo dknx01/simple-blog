@@ -68,3 +68,5 @@ services:
     App\Controller\CacheController:
         arguments:
             $cacheDir: '%kernel.cache_dir%'
+
+    Symfony\Bridge\Doctrine\Security\RememberMe\DoctrineTokenProvider: ~
