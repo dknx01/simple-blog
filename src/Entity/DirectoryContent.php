@@ -14,6 +14,7 @@ class DirectoryContent
         'TTF',
         'svg',
         'xcf',
+        'ai',
     ];
 
     private UnicodeString $fileName;

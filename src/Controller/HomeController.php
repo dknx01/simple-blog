@@ -184,12 +184,13 @@ class HomeController extends AbstractController
 
     /**
      * @Route("/pdf/{path}", name="pdf")
+     * @param string $path
      * @return Response
      */
     public function toPdf(string $path): Response
     {
         $content = $this->contentLister->getContentForFile(urldecode($path) . '.md');
-        $fileName = urldecode(u($path)->afterLast('/')->toString());
+        $fileName = u(urldecode($path))->afterLast('/')->ensureEnd('.pdf')->toString();
         return new PdfResponse(
             $this->snappy->getOutputFromHtml(
                 $this->renderView(

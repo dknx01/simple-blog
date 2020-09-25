@@ -37,11 +37,8 @@ class MemoController extends AbstractController
             $memoRepository->save($memo);
             $contentLister->listContent(
                 sprintf(
-                    '%s/Stammtische/%s/%s_%s.md',
-                    'data/Partei',
+                    '/Stammtische/%s',
                     $memo->getType(),
-                    u($memo->getTitle())->replace(' ', '_')->toString(),
-                    $memo->getDate()->format('d.m.Y')
                 )
             );
 

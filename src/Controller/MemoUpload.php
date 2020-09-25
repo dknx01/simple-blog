@@ -9,10 +9,13 @@ namespace App\Controller;
 
 use App\Entity\DirectoryContent;
 use App\Entity\MemoEdit;
+use App\Entity\NewDocument;
 use App\Form\MemoEditType;
 use App\Form\MemoPdf;
+use App\Form\NewDocumentType;
 use App\MarkdownContent\MarkdownReader;
 use App\Repository\MemoRepository;
+use App\Repository\NewDocumentRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Finder;
@@ -128,6 +131,53 @@ class MemoUpload extends AbstractController
 
         return $this->render('memo/edit.html.twig', [
             'memoEdit' => $memoEdit,
+            'form' => $form->createView(),
+            'errors' => $errors
+        ]);
+    }
+
+    /**
+     * @Route("/new/{path}", name="new-document", methods={"GET","POST"})
+     * @IsGranted("ROLE_ADMIN")
+     * @param Request $request
+     * @param MarkdownReader $markdownReader
+     * @param NewDocumentRepository $repository
+     * @param string|null $path
+     * @return Response
+     * @throws \Psr\Cache\InvalidArgumentException
+     */
+    public function newDocument(
+        Request $request,
+        MarkdownReader $markdownReader,
+        NewDocumentRepository $repository,
+        string $path = null
+    ): Response
+    {
+        $errors = [];
+
+        $newDocument = new NewDocument();
+
+        if ($request->getMethod() === 'GET') {
+            $path = urldecode($path);
+            $path = (str_starts_with($path, '/') ? $path : '/' . $path );
+            $newDocument->setPath('/Dokumente' . $path . '/new_Memo');
+        }
+
+        $form = $this->createForm(NewDocumentType::class, $newDocument);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                $repository->save($newDocument);
+                $filePath = $this->dataPath . $newDocument->getPath() . '.md';
+                $markdownReader->refreshContent($filePath);
+            } catch (\Exception $exception) {
+                $errors[] = $this->sanitizeErrorMessage($exception);
+            }
+        }
+
+        return $this->render('memo/edit.html.twig', [
+            'memoEdit' => $newDocument,
             'form' => $form->createView(),
             'errors' => $errors
         ]);

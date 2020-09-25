@@ -40,6 +40,8 @@
         "symfony/yaml": "5.1.*"
     },
     "require-dev": {
+        "fzaninotto/faker": "^1.9",
+        "phpspec/prophecy-phpunit": "^2.0",
         "phpunit/phpunit": "^9.2",
         "roave/security-advisories": "dev-master",
         "symfony/debug-pack": "*",

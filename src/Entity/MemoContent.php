@@ -23,6 +23,7 @@ class MemoContent
     {
         $this->type = $type;
         $this->path = $path;
+        $this->content = null;
     }
 
     /**

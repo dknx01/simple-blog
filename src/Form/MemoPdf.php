@@ -16,7 +16,6 @@ use Symfony\Component\Validator\Constraints\File;
 
 class MemoPdf extends AbstractType
 {
-
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('pdf', FileType::class, [

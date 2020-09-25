@@ -84,6 +84,9 @@
     "egulias/email-validator": {
         "version": "2.1.18"
     },
+    "fzaninotto/faker": {
+        "version": "v1.9.1"
+    },
     "h4cc/wkhtmltoimage-amd64": {
         "version": "0.12.4"
     },
@@ -152,6 +155,9 @@
     },
     "phpspec/prophecy": {
         "version": "1.11.1"
+    },
+    "phpspec/prophecy-phpunit": {
+        "version": "v2.0.1"
     },
     "phpunit/php-code-coverage": {
         "version": "8.0.2"

@@ -26,6 +26,11 @@ class MarkdownReader
         $this->cache = $cache;
     }
 
+    /**
+     * @param string $path
+     * @return string
+     * @throws InvalidArgumentException
+     */
     public function getContent(string $path): string
     {
         $key = md5($path);

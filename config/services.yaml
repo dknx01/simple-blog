@@ -57,6 +57,9 @@ services:
     App\Repository\MemoRepository:
         arguments:
             $path: '%kernel.project_dir%/%data_folder%'
+    App\Repository\NewDocumentRepository:
+        arguments:
+            $path: '%kernel.project_dir%/%data_folder%'
 
     App\Controller\DocumentFolderController:
         arguments:

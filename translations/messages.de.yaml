@@ -5,10 +5,11 @@ menu:
   linksammlung: Linksammlung
   newbees: Neu dabei!?
   memo:
-    new: Neuer Eintrag (Markdown)
+    new: Neues Stammtisch-Memo (Markdown)
     linklist_edit: Linkliste bearbeiten
     pdf_upload:  Upload PDF
     document_list:  Dokumentenliste
+  new_document:  Neues Dokument
   site_management: Seitenverwaltung
   user:
     headline: Benutzerverwaltung

@@ -9,6 +9,7 @@
                 <div id="Dokumente" class="collapse show">
                     <ul>
                         <li><span><i class="fas fa-folder-plus"></i><a href="{{ path('document_folder_new', {path: '/'|url_encode}) }}"> Neuer Ordner</a></span>
+                        <li><span><i class="fas fa-file-medical"></i><a href="{{ path('new-document', {path: '/'|url_encode}) }}"> {{ 'menu.new_document'|trans }}</a></span>
                             {% for folder in folders %}
                                 {{ _self.subFolders(folder) }}
                             {% endfor %}
@@ -120,6 +121,8 @@
             <div id="{{ currentFolder.name_slug }}" class="collapse">
                 <li><span><i class="fas fa-folder-plus"></i><a
                                 href="{{ path('document_folder_new', {path: currentFolder.path|url_encode}) }}"> Neuer Ordner</a></span>
+                </li><li><span><i class="fas fa-file-medical"></i><a
+                                href="{{ path('new-document', {path: currentFolder.path|url_encode}) }}"> {{ 'menu.new_document'|trans }}</a></span>
                 </li>
             {% if not currentFolder.empty %}
                 {% for subfolder in currentFolder.subFolders %}

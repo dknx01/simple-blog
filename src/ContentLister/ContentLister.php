@@ -11,13 +11,12 @@ use App\Entity\DirectoryContent;
 use App\Entity\DirectoryContentCollection;
 use App\Entity\MemoContent;
 use App\MarkdownContent\MarkdownReader;
+use Psr\Cache\InvalidArgumentException;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\String\UnicodeString;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 use function Symfony\Component\String\u;
-
-
 
 class ContentLister
 {
@@ -46,6 +45,11 @@ class ContentLister
         $this->markdownReader = $markdownReader;
     }
 
+    /**
+     * @param string $path
+     * @return DirectoryContentCollection
+     * @throws InvalidArgumentException
+     */
     public function listContent(string $path): DirectoryContentCollection
     {
         return $this->cache->get(
@@ -86,7 +90,6 @@ class ContentLister
     {
         return function(ItemInterface $item) use ($path) {
             $item->expiresAfter(3600);
-            //$item->expiresAfter(1);
             $contentCollection = new DirectoryContentCollection();
             $reader = new Finder();
             foreach ((new Finder())->in($this->dataPath . $path)->directories()->sortByName() as $folder) {
