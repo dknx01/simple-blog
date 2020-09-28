@@ -13,13 +13,19 @@ framework:
         #default_redis_provider: redis://localhost
 
         # APCu (not recommended with heavy random-write workloads as memory fragmentation can cause perf issues)
-        #app: cache.adapter.filesystem
+        app: cache.adapter.pdo
         #search: cache.adapter.pdo
 
 
         # Namespaced pools use the above "app" backend by default
         pools:
+            cache.application:
+                adapter: cache.adapter.pdo
+                default_lifetime: 5
             cache.search:
+                adapter: cache.adapter.pdo
+                default_lifetime: 5
+            cache.wiki:
                 adapter: cache.adapter.pdo
                 default_lifetime: 5
             #my.dedicated.cache: null

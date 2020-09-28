@@ -7,7 +7,6 @@
 
 namespace App\Controller;
 
-use App\Entity\DirectoryContent;
 use App\Entity\MemoEdit;
 use App\Entity\NewDocument;
 use App\Form\MemoEditType;
@@ -23,6 +22,8 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Process\Exception\ProcessFailedException;
+use Symfony\Component\Process\Process;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use function Symfony\Component\String\u;
@@ -67,13 +68,14 @@ class MemoUpload extends AbstractController
                 $safeFilename = $slugger->slug($originalFilename);
                 $newFilename = $safeFilename . '.' . $pdfFile->guessExtension();
 
-                // Move the file to the directory where brochures are stored
+                // Move the file to the directory where files are stored
                 try {
-                    $storagePath = $this->$this->dataPath . '/' . $form->get('type')->getData();
+                    $storagePath = $this->dataPath . '/' . $form->get('type')->getData();
                     $pdfFile->move(
                         $storagePath,
                         $newFilename
                     );
+                    $this->extractData($storagePath . '/' . $newFilename);
                 } catch (FileException $e) {
                 }
             }
@@ -245,5 +247,15 @@ class MemoUpload extends AbstractController
             return $match[1];
         });
         return $message->trim()->toString();
+    }
+
+    private function extractData(string $filePath): void
+    {
+        $target = u($filePath)->replace('.pdf', '.ptxt')->toString();
+        $process = new Process(['pdftotext', $filePath, $target]);
+        $process->run();
+        if (!$process->isSuccessful()) {
+            throw new ProcessFailedException($process);
+        }
     }
 }

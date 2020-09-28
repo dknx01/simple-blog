@@ -27,6 +27,7 @@ class ContentLister
         '*.TTF',
         '*.svg',
         '*.xcf',
+        '*.ai',
     ];
     private string $dataPath;
     private CacheInterface $cache;

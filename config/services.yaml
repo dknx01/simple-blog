@@ -46,6 +46,7 @@ services:
     App\ContentLister\ContentLister:
         arguments:
             $dataPath: '%kernel.project_dir%/%data_folder%'
+            $cache: '@cache.application'
 
     App\ContentLister\ContentSearch:
         arguments:
@@ -67,6 +68,7 @@ services:
     App\Repository\WikiRepository:
         arguments:
             $path: '%kernel.project_dir%/%data_folder%'
+            $cache: '@cache.wiki'
 
     App\Controller\DocumentFolderController:
         arguments:
@@ -74,6 +76,6 @@ services:
 
     App\Controller\CacheController:
         arguments:
-            $cacheDir: '%kernel.cache_dir%'
+            $globalClearer: '@cache.global_clearer'
 
     Symfony\Bridge\Doctrine\Security\RememberMe\DoctrineTokenProvider: ~

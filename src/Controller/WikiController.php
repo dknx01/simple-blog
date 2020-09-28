@@ -29,19 +29,21 @@ class WikiController extends AbstractController
     }
 
     /**
-     * @Route("/new", name="wiki_new", methods={"GET","POST"})
+     * @Route("/neu", name="wiki_new", methods={"GET","POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
+     * @param Request $request
+     * @param WikiRepository $wikiRepository
+     * @return Response
+     * @todo refactore
      */
-    public function new(Request $request): Response
+    public function new(Request $request, WikiRepository $wikiRepository): Response
     {
         $wiki = new Wiki();
         $form = $this->createForm(WikiType::class, $wiki);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($wiki);
-            $entityManager->flush();
+            $wikiRepository->save($wiki);
 
             return $this->redirectToRoute('wiki_index');
         }
@@ -64,7 +66,7 @@ class WikiController extends AbstractController
         $path = urldecode($path);
         return $this->render('wiki/show.html.twig', [
             'content' => $wikiRepository->findOneByPath($path),
-            'title' => u($path)->afterLast('/')->toString(),
+            'title' => u($path)->ensureStart('/')->afterLast('/')->toString(),
             'path' => $path
         ]);
     }
@@ -72,6 +74,10 @@ class WikiController extends AbstractController
     /**
      * @Route("/edit/{path}", name="wiki_edit", methods={"GET","POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
+     * @param Request $request
+     * @param string $path
+     * @param WikiRepository $wikiRepository
+     * @return Response
      */
     public function edit(Request $request, string $path, WikiRepository $wikiRepository): Response
     {
@@ -86,27 +92,11 @@ class WikiController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $wikiRepository->save($form->getData());
-            //return $this->redirectToRoute('wiki_index');
         }
 
         return $this->render('wiki/edit.html.twig', [
             'wiki' => $wiki,
             'form' => $form->createView(),
         ]);
-    }
-
-    /**
-     * @Route("/{id}", name="wiki_delete", methods={"DELETE"})
-     * @IsGranted("ROLE_ADMIN")
-     */
-    public function delete(Request $request, Wiki $wiki): Response
-    {
-        if ($this->isCsrfTokenValid('delete'.$wiki->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($wiki);
-            $entityManager->flush();
-        }
-
-        return $this->redirectToRoute('wiki_index');
     }
 }

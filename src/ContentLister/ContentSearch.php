@@ -67,7 +67,6 @@ class ContentSearch
                     u($file->getPathname())->replace($this->dataPath, '')->toString()
                 );
             }
-
             return $contentCollection;
         };
 
@@ -79,10 +78,18 @@ class ContentSearch
             $contentCollection = [];
 
             foreach ((new Finder())->in($this->dataPath)->files()->name(['*.md', '*.ptxt'])->contains('~'.$content.'~i') as $file) {
+                $baseName = u($file->getBasename());
+                $fileName = u($file->getFilename());
+                $path = u($file->getPathname())->replace($this->dataPath, '');
+                if ($baseName->endsWith('ptxt')) {
+                    $baseName = $baseName->replace('.ptxt', '.pdf');
+                    $fileName = $fileName->replace('.ptxt', '.pdf');
+                    $path = $path->replace('.ptxt', '.pdf');
+                }
                 $contentCollection[] = new SearchResult(
-                    $file->getBasename(),
-                    $file->getFilename(),
-                    u($file->getPathname())->replace($this->dataPath, '')->toString()
+                    $baseName->toString(),
+                    $fileName->toString(),
+                    $path->toString()
                 );
             }
 

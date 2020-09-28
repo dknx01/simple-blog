@@ -4,8 +4,8 @@ namespace App\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\CacheClearer\CacheClearerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -13,25 +13,24 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class CacheController extends AbstractController
 {
-    private string $cacheDir;
+    private CacheClearerInterface $cacheClearer;
 
     /**
-     * @param string $cacheDir
+     * @param CacheClearerInterface $globalClearer
      */
-    public function __construct(string $cacheDir)
+    public function __construct(CacheClearerInterface $globalClearer)
     {
-        $this->cacheDir = $cacheDir;
+        $this->cacheClearer = $globalClearer;
     }
 
     /**
      * @Route("/cache/leeren/inhalt", name="cache_content_clear")
      * @IsGranted("ROLE_ADMIN")
-     * @param Filesystem $filesystem
      * @return Response
      */
-    public function contentClear(Filesystem $filesystem): Response
+    public function contentClear(): Response
     {
-        $filesystem->remove($this->cacheDir . '/pools/');
+        $this->cacheClearer->clear('');
         return $this->render('home/default.html.twig', [
             'title' => 'Inhaltscache leeren',
             'controller_name' => 'Inhaltscache leeren',
@@ -42,12 +41,11 @@ class CacheController extends AbstractController
     /**
      * @Route("/cache/leeren/alles", name="cache_system_clear")
      * @IsGranted("ROLE_ADMIN")
-     * @param Filesystem $filesystem
      * @return Response
      */
-    public function systemClear(Filesystem $filesystem): Response
+    public function systemClear(): Response
     {
-        $filesystem->remove($this->cacheDir . '/');
+        $this->cacheClearer->clear('');
         return $this->render('home/default.html.twig', [
             'title' => 'Gesamten Cache leeren',
             'controller_name' => 'Gesamten cache leeren',
