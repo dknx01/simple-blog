@@ -50,6 +50,7 @@ services:
     App\ContentLister\ContentSearch:
         arguments:
             $dataPath: '%kernel.project_dir%/%data_folder%'
+            $cache: '@cache.search'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

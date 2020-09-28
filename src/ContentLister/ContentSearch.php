@@ -8,7 +8,9 @@
 namespace App\ContentLister;
 
 use App\Entity\SearchResult;
+use Symfony\Component\Cache\CacheItem;
 use Symfony\Component\Finder\Finder;
+use Symfony\Contracts\Cache\CacheInterface;
 use function Symfony\Component\String\u;
 
 class ContentSearch
@@ -22,61 +24,69 @@ class ContentSearch
         '*.xcf',
     ];
     private string $dataPath;
+    private CacheInterface $cache;
 
     /**
      * ContentLister constructor.
      * @param string $dataPath
+     * @param CacheInterface $cache
      */
-    public function __construct(string $dataPath)
+    public function __construct(string $dataPath, CacheInterface $cache)
     {
         $this->dataPath = $dataPath;
+        $this->cache = $cache;
     }
 
     public function listContent(string $content): array
     {
-        return $this->readDirectory($content);
+        return $this->cache->get('searchDir_' . \md5($content), $this->readDirectory($content));
     }
 
     public function findContent(string $content): array
     {
-        return $this->readFiles($content);
+        return $this->cache->get('searchFiles_' . \md5($content), $this->readFiles($content));
     }
 
     /**
      * @param string $content
-     * @return array
+     * @return \Closure
      */
-    private function readDirectory(string $content): array
+    private function readDirectory(string $content): \Closure
     {
-        $contentCollection = [];
+        return function (CacheItem $item) use ($content) {
+            $contentCollection = [];
 
-        $fileNames = [];
-        foreach (self::AllowedFiles as $allowedFile) {
-            $fileNames[] = '~.*' . $content . '.' . $allowedFile . '~i';
-        }
-        foreach ((new Finder())->in($this->dataPath)->files()->name($fileNames) as $file) {
-            $contentCollection[] = new SearchResult(
-                $file->getBasename(),
-                $file->getFilename(),
-                u($file->getPathname())->replace($this->dataPath, '')->toString()
-            );
-        }
+            $fileNames = [];
+            foreach (self::AllowedFiles as $allowedFile) {
+                $fileNames[] = '~.*' . $content . '.' . $allowedFile . '~i';
+            }
+            foreach ((new Finder())->in($this->dataPath)->files()->name($fileNames) as $file) {
+                $contentCollection[] = new SearchResult(
+                    $file->getBasename(),
+                    $file->getFilename(),
+                    u($file->getPathname())->replace($this->dataPath, '')->toString()
+                );
+            }
 
-        return $contentCollection;
+            return $contentCollection;
+        };
+
     }
 
-    private function readFiles(string $content): array
+    private function readFiles(string $content): \Closure
     {
-        $contentCollection = [];
+        return function (CacheItem $item) use ($content) {
+            $contentCollection = [];
 
-        foreach ((new Finder())->in($this->dataPath)->files()->name(['*.md', '*.ptxt'])->contains('~'.$content.'~i') as $file) {
-            $contentCollection[] = new SearchResult(
-                $file->getBasename(),
-                $file->getFilename(),
-                u($file->getPathname())->replace($this->dataPath, '')->toString()
-            );
-        }
+            foreach ((new Finder())->in($this->dataPath)->files()->name(['*.md', '*.ptxt'])->contains('~'.$content.'~i') as $file) {
+                $contentCollection[] = new SearchResult(
+                    $file->getBasename(),
+                    $file->getFilename(),
+                    u($file->getPathname())->replace($this->dataPath, '')->toString()
+                );
+            }
 
-       return $contentCollection;
+            return $contentCollection;
+        };
     }
 }

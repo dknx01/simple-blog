@@ -6,14 +6,20 @@ framework:
         # The "app" cache stores to the filesystem by default.
         # The data in this cache should persist between deploys.
         # Other options include:
+        default_pdo_provider: 'doctrine.dbal.default_connection'
 
         # Redis
         #app: cache.adapter.redis
         #default_redis_provider: redis://localhost
 
         # APCu (not recommended with heavy random-write workloads as memory fragmentation can cause perf issues)
-        #app: cache.adapter.apcu
+        #app: cache.adapter.filesystem
+        #search: cache.adapter.pdo
+
 
         # Namespaced pools use the above "app" backend by default
-        #pools:
+        pools:
+            cache.search:
+                adapter: cache.adapter.pdo
+                default_lifetime: 5
             #my.dedicated.cache: null
