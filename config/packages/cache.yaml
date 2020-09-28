@@ -21,11 +21,8 @@ framework:
         pools:
             cache.application:
                 adapter: cache.adapter.pdo
-                default_lifetime: 5
             cache.search:
                 adapter: cache.adapter.pdo
-                default_lifetime: 5
             cache.wiki:
                 adapter: cache.adapter.pdo
-                default_lifetime: 5
             #my.dedicated.cache: null

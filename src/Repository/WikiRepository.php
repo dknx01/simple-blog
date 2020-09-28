@@ -58,9 +58,10 @@ class WikiRepository
     {
         return function (ItemInterface $item) {
             $content = [];
-            foreach ((new Finder())->in($this->path)->files()->name('*.md') as $file) {
+            foreach ((new Finder())->in($this->path)->files()->name('*.md')->sortByName(true) as $file) {
                 $entry = u($file->getBasename())->beforeLast('.');
-                $content[$entry->slice(0,1)->upper()->toString()][$entry->toString()] = u($file->getPathname())->replace($this->path, '')->beforeLast('.')->toString();
+                $fileName = u($file->getPathname())->replace($this->path, '')->beforeLast('.')->toString();
+                $content[$entry->slice(0,1)->upper()->toString()][$entry->toString()] = $fileName;
             }
             array_walk($content, static function ($item, $key) use (&$content) {
                 natsort($item);
@@ -99,5 +100,8 @@ class WikiRepository
             $key,
             $this->getEntry($wiki->getName())
         );
+
+        $this->cache->delete('all');
+        $this->findAll();
     }
 }

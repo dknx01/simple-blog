@@ -10,15 +10,26 @@
     {% endif %}
     <div class="collapse navbar-collapse" style="background-color: #dee2e6 !important;" id="navbarSupportedContent">
     <ul class="navbar-nav ml-auto ml-md-0">
-        {% for name, entry in menue %}
-            <li class="nav-item">
-                {% if entry.arguments is not null %}
-                    <a class="nav-link-top nav-link" href="{{ path(entry.route, entry.arguments) }}">{{ ( name)|trans({}, 'menu') }} <span class="sr-only"></span></a>
-                {% else %}
-                    <a class="nav-link-top nav-link" href="{{ path(entry.route) }}">{{ ( name)|trans({}, 'menu') }} <span class="sr-only"></span></a>
-                {% endif %}
-            </li>
-        {% endfor %}
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" id="stammtischDropdown" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ 'stammtische'|trans({}, 'menu') }}</a>
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="stammtischDropdown">
+                    <a class="dropdown-item" href="{{ path('list-stammtische', {'path': 'LV'}) }}">{{ 'lv_stammtisch'|trans({}, 'menu') }}</a>
+                    <a class="dropdown-item" href="{{ path('list-stammtische', {'path': 'OV TK'}) }}">{{ 'ov_stammtisch'|trans({}, 'menu') }}</a>
+            </div>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link-top nav-link" href="{{ path('documents', {'path': 'LV'}) }}">{{ ( 'dokumente')|trans({}, 'menu') }} <span class="sr-only"></span></a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link-top nav-link" href="{{ path('link-collection', {'path': 'LV'}) }}">{{ ( 'linksammlung')|trans({}, 'menu') }} <span class="sr-only"></span></a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link-top nav-link" href="{{ path('newbees') }}">{{ ('newbees')|trans({}, 'menu') }} <span class="sr-only"></span></a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link-top nav-link" href="{{ path('wiki_index') }}">{{ ( 'wiki')|trans({}, 'menu') }} <span class="sr-only"></span></a>
+        </li>
     </ul>
 
         <!-- Navbar Search-->
@@ -44,6 +55,7 @@
                     <a class="dropdown-item" href="{{ path('app_login') }}">{{ 'login'|trans({}, 'menu') }}</a>
                 {% endif %}
             </div>
+        </li>
     </ul>
     <!-- Navbar-->
     </div>
