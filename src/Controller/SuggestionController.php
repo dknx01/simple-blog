@@ -25,12 +25,17 @@ class SuggestionController extends AbstractController
         $this->workflowRegistry = $workflowRegistry;
     }
     /**
-     * @Route("/", name="suggestion_index", methods={"GET"})
+     * @Route("/{excludeClosed}", name="suggestion_index", methods={"GET"})
      */
-    public function index(SuggestionRepository $suggestionRepository): Response
+    public function index(SuggestionRepository $suggestionRepository, string $excludeClosed = ''): Response
     {
+        if ($excludeClosed !== '') {
+            $suggestions = $suggestionRepository->findAllNotClosed();
+        } else {
+            $suggestions = $suggestionRepository->findAll();
+        }
         return $this->render('suggestion/index.html.twig', [
-            'suggestions' => $suggestionRepository->findAll(),
+            'suggestions' => $suggestions,
         ]);
     }
 
@@ -102,6 +107,50 @@ class SuggestionController extends AbstractController
     }
 
     /**
+     * @Route("/action/{id}/{transition}", name="suggestion_transition")
+     * @param Suggestion $suggestion
+     * @param SuggestionRepository $suggestionRepository
+     * @param string $transition
+     * @return Response
+     */
+    public function transition(Suggestion $suggestion, SuggestionRepository $suggestionRepository, string $transition): Response
+    {
+        try {
+            $workflow = $this->workflowRegistry->get($suggestion);
+            $workflow->apply($suggestion, urldecode($transition));
+            $suggestionRepository->save($suggestion);
+        } catch (LogicException $exception) {
+            preg_match('/^Transition "(.+).*" /', $exception->getMessage(), $matches);
+            $this->addFlash(
+                'error',
+                $matches[1]
+            );
+        }
+
+        return $this->redirectToRoute('suggestion_index');
+    }
+
+    /**
+     * @Route("/comment/{id}/edit", name="suggestion_comment", methods={"GET","POST"})
+     * @param Request $request
+     * @param SuggestionRepository $suggestionRepository
+     * @param Suggestion $suggestion
+     * @param MarkdownReader $markdownReader
+     * @return Response
+     */
+    public function comment(Request $request, SuggestionRepository $suggestionRepository, Suggestion $suggestion,  MarkdownReader $markdownReader): Response
+    {
+        if ($request->getMethod() === 'POST'
+            && $this->isCsrfTokenValid('new_suggestion_comment', $request->request->get('_csrf_token'))
+        ) {
+                $suggestion->setComments($this->handleComments($request, $markdownReader, $suggestion));
+                    $suggestionRepository->save($suggestion);
+                    return $this->redirectToRoute('suggestion_index');
+        }
+        return $this->render('suggestion/comment.html.twig', ['name' => 'add_comment', 'suggestion' => $suggestion]);
+    }
+
+    /**
      * @Route("/{id}", name="suggestion_delete", methods={"DELETE"})
      */
     public function delete(Request $request, Suggestion $suggestion): Response
@@ -113,5 +162,14 @@ class SuggestionController extends AbstractController
         }
 
         return $this->redirectToRoute('suggestion_index');
+    }
+
+    private function handleComments(Request $request, MarkdownReader $markdownReader, Suggestion $suggestion): string
+    {
+        $comment = $markdownReader->parseString(
+            '`Datum:' . (new \DateTime())->format('d.m.Y H:i:s') . '`<br>' .
+            $request->request->get('comment')
+        );
+        return $suggestion->getComments() === '' ? $comment : $suggestion->getComments() . '<hr>' . $comment;
     }
 }

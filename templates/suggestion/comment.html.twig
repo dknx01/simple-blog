@@ -1,0 +1,73 @@
+{% extends 'layout/conatiner_fluid.html.twig' %}
+
+{% block title %}{{ 'headline'|trans({}, 'suggestion') }}{% endblock %}
+
+{% block content_header %}Comment Suggestion{% endblock %}
+{% block body %}
+    <div class="row justify-content-center">
+        <div class="col-lg-5">
+            <div class="card shadow-lg border-0 rounded-lg mt-5">
+                <div class="card-header"><h3 class="text-center font-weight-light my-4">{{ 'add_comment'|trans({}, 'suggestion') }}</h3></div>
+                <div class="card-body">
+                    <form method="post" action="{{ path('suggestion_comment', {'id': suggestion.id}) }}">
+                        <div class="form-group">
+                            {% for message in app.flashes('error') %}
+                                <div class="alert alert-danger">{{ message }}</div>
+                            {% endfor %}
+
+                            <label class="small mb-1" for="inputSummary">{{ 'form.Summary' |trans({}, 'suggestion') }}</label>
+                            <input type="text" value="{{ suggestion.summary }}" name="summary" id="inputSummary" class="form-control py-4" readonly >
+                            <label class="small mb-1" for="inputComment">{{ 'form.comments' |trans({}, 'suggestion') }}</label>
+                            <textarea name="comment" id="inputComment" class="form-control py-4">{% if app.request.method == 'post' %}{{ app.request.request.get('comment') }}{% endif %}</textarea>
+
+                            <input type="hidden" name="_csrf_token" value="{{ csrf_token('new_suggestion_comment') }}" >
+                        </div>
+                        <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
+                            <button class="btn btn-lg btn-partei" type="submit">
+                                {{ 'save'|trans }}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block javascripts %}
+    <link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
+    <script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
+    <script>
+        var easyMDEContent = new EasyMDE({
+            autofocus: true,
+            autosave: {
+                enabled: true,
+                uniqueId: "{{ uuid() }}",
+                delay: 1000,
+                submit_delay: 5000,
+                timeFormat: {
+                    locale: 'en-US',
+                    format: {
+                        year: 'numeric',
+                        month: 'long',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                    },
+                },
+                text: "Autosaved: "
+            },
+            toolbar: [
+                "bold", "italic", "strikethrough", "|",
+                "heading", "heading-smaller", "heading-bigger", "|",
+                "quote", "code", "|",
+                "unordered-list", "ordered-list", "|",
+                "link", "image", "table", "horizontal-rule", "|",
+                "preview", "side-by-side", "|",
+                "guide"
+            ]
+        });
+    </script>
+    {{ parent() }}
+{% endblock %}

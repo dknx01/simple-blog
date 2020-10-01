@@ -21,3 +21,6 @@ twig:
             'wiki':
                 route: 'wiki_index'
                 arguments: ~
+            'suggestions':
+                route: 'suggestion_index'
+                arguments: ~

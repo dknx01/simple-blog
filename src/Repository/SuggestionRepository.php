@@ -11,6 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Suggestion|null findOneBy(array $criteria, array $orderBy = null)
  * @method Suggestion[]    findAll()
  * @method Suggestion[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method
  */
 class SuggestionRepository extends ServiceEntityRepository
 {
@@ -47,4 +48,18 @@ class SuggestionRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function findAllNotClosed(): array
+    {
+        $qb = $this->createQueryBuilder('s');
+        $qb->where('s.currentState != :closed')
+            ->setParameter('closed', '"closed"');
+        return $qb->getQuery()->getResult();
+    }
+
+    public function save(Suggestion $suggestion): void
+    {
+        $this->_em->persist($suggestion);
+        $this->_em->flush();
+    }
 }

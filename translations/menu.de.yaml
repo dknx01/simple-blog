@@ -4,6 +4,8 @@ dokumente: 'Dokumente'
 linksammlung: 'Linksammlung'
 newbees: 'Neu dabei!?'
 wiki: 'Wiki'
+suggestions: 'Ideen und Vorschläge'
+suggestion: 'Ideen'
 memo:
   new: 'Neues Stammtisch-Memo (Markdown)'
   linklist_edit: 'Linkliste bearbeiten'
