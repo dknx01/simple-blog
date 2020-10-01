@@ -6,6 +6,7 @@ use App\Entity\LinkCollection;
 use App\Form\LinkType;
 use App\MarkdownContent\MarkdownReader;
 use App\Repository\LinkCollectionRepository;
+use Psr\Cache\InvalidArgumentException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,11 +30,12 @@ class LinkcollectionController extends AbstractController
 
     /**
      * @Route("/linksammlung", name="link-collection-edit", methods={"GET","POST"})
-     * @IsGranted("ROLE_ADMIN")
+     * @IsGranted("ROLE_EDITOR")
      * @param Request $request
      * @param LinkCollectionRepository $repository
      * @param MarkdownReader $markdownReader
      * @return Response
+     * @throws InvalidArgumentException
      */
     public function linkCollectionEdit(
         Request $request,

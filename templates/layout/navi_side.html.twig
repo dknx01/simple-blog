@@ -20,18 +20,20 @@
                     {{ 'memo.document_list'|trans({}, 'menu') }}
                 </a>
                 <div class="sb-sidenav-menu-heading font-weight-bold">{{ 'site_management'|trans({}, 'menu') }}</div>
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLayouts"
-                   aria-expanded="false" aria-controls="collapseLayouts">
-                    <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
-                    {{ 'user.headline'|trans({}, 'menu') }}
-                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                </a>
-                <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
-                    <nav class="sb-sidenav-menu-nested nav">
-                        <a class="nav-link" href="{{ path('user_list') }}"><div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>{{ 'user.overview'|trans({}, 'menu') }}</a>
-                        <a class="nav-link" href="{{ path('user_new') }}"><div class="sb-nav-link-icon"><i class="fas fa-user-plus"></i></div>{{ 'user.new'|trans({}, 'menu') }}</a>
-                    </nav>
-                </div>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLayouts"
+                       aria-expanded="false" aria-controls="collapseLayouts">
+                        <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+                        {{ 'user.headline'|trans({}, 'menu') }}
+                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                    </a>
+                    <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
+                        <nav class="sb-sidenav-menu-nested nav">
+                            <a class="nav-link" href="{{ path('user_list') }}"><div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>{{ 'user.overview'|trans({}, 'menu') }}</a>
+                            <a class="nav-link" href="{{ path('user_new') }}"><div class="sb-nav-link-icon"><i class="fas fa-user-plus"></i></div>{{ 'user.new'|trans({}, 'menu') }}</a>
+                        </nav>
+                    </div>
+                {% endif %}
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseFolder"
                    aria-expanded="false" aria-controls="collapseFolder">
                     <div class="sb-nav-link-icon"><i class="fas fa-folder-open"></i></div>
@@ -43,19 +45,21 @@
                         <a class="nav-link" href="{{ path('document_folder_list') }}"><div class="sb-nav-link-icon"><i class="fas fa-folder-plus"></i></div>{{ 'documents.new'|trans({}, 'menu') }}</a>
                     </nav>
                 </div>
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseFolder"
-                   aria-expanded="false" aria-controls="collapseFolder">
-                    <div class="sb-nav-link-icon"><i class="fas fa-sync"></i></div>
-                    {{ 'cache.headline'|trans({}, 'menu') }}
-                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                </a>
-                <div class="collapse" id="collapseFolder" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
-                    <nav class="sb-sidenav-menu-nested nav">
-                        <a class="nav-link" href="{{ path('cache_content_clear') }}"><div class="sb-nav-link-icon"><i class="fas fa-sync"></i></div>{{ 'cache.clear_content'|trans({}, 'menu') }}</a>
-                    </nav><nav class="sb-sidenav-menu-nested nav">
-                        <a class="nav-link" href="{{ path('cache_system_clear') }}"><div class="sb-nav-link-icon"><i class="fas fa-trash"></i></div>{{ 'cache.clear_all'|trans({}, 'menu') }}</a>
-                    </nav>
-                </div>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseFolder"
+                       aria-expanded="false" aria-controls="collapseFolder">
+                        <div class="sb-nav-link-icon"><i class="fas fa-sync"></i></div>
+                        {{ 'cache.headline'|trans({}, 'menu') }}
+                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                    </a>
+                    <div class="collapse" id="collapseFolder" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
+                        <nav class="sb-sidenav-menu-nested nav">
+                            <a class="nav-link" href="{{ path('cache_content_clear') }}"><div class="sb-nav-link-icon"><i class="fas fa-sync"></i></div>{{ 'cache.clear_content'|trans({}, 'menu') }}</a>
+                        </nav><nav class="sb-sidenav-menu-nested nav">
+                            <a class="nav-link" href="{{ path('cache_system_clear') }}"><div class="sb-nav-link-icon"><i class="fas fa-trash"></i></div>{{ 'cache.clear_all'|trans({}, 'menu') }}</a>
+                        </nav>
+                    </div>
+                {% endif %}
 {#                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"#}
 {#                   aria-expanded="false" aria-controls="collapsePages">#}
 {#                    <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>#}

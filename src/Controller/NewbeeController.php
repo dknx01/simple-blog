@@ -29,7 +29,7 @@ class NewbeeController extends AbstractController
 
     /**
      * @Route("/neu_dabei", name="neu_dabei-edit", methods={"GET","POST"})
-     * @IsGranted("ROLE_ADMIN")
+     * @IsGranted("ROLE_EDITOR")
      * @param Request $request
      * @param LinkCollectionRepository $repository
      * @param MarkdownReader $markdownReader

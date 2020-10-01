@@ -59,6 +59,16 @@ class ContentLister
         );
     }
 
+    public function refreshContent(string $path): void
+    {
+        $pathMd5 = \md5($path);
+        $this->cache->delete($pathMd5);
+        $this->cache->get(
+            $pathMd5,
+            $this->readDirectory($path)
+        );
+    }
+
     /**
      * @param string|UnicodeString $path
      * @return MemoContent

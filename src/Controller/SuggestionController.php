@@ -6,6 +6,7 @@ use App\Entity\Suggestion;
 use App\Form\SuggestionType;
 use App\MarkdownContent\MarkdownReader;
 use App\Repository\SuggestionRepository;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,6 +27,7 @@ class SuggestionController extends AbstractController
     }
     /**
      * @Route("/", name="suggestion_index", methods={"GET"}))
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function index(SuggestionRepository $suggestionRepository): Response
     {
@@ -37,6 +39,7 @@ class SuggestionController extends AbstractController
 
     /**
      * @Route("/sort/{excludeClosed}", name="suggestion_index_sorted", methods={"GET"}))
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function indexSorted(SuggestionRepository $suggestionRepository, string $excludeClosed = ''): Response
     {
@@ -51,6 +54,7 @@ class SuggestionController extends AbstractController
 
     /**
      * @Route("/new", name="suggestion_new", methods={"GET","POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function new(Request $request, MarkdownReader $markdownReader): Response
     {
@@ -88,6 +92,7 @@ class SuggestionController extends AbstractController
 
     /**
      * @Route("/{id}", name="suggestion_show", methods={"GET"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
      */
     public function show(Suggestion $suggestion): Response
     {
@@ -98,6 +103,7 @@ class SuggestionController extends AbstractController
 
     /**
      * @Route("/{id}/edit", name="suggestion_edit", methods={"GET","POST"})
+     * @IsGranted("ROLE_ADMIN")
      */
     public function edit(Request $request, Suggestion $suggestion): Response
     {
@@ -118,6 +124,7 @@ class SuggestionController extends AbstractController
 
     /**
      * @Route("/action/{id}/{transition}", name="suggestion_transition")
+     * @IsGranted("ROLE_ADMIN")
      * @param Suggestion $suggestion
      * @param SuggestionRepository $suggestionRepository
      * @param string $transition
@@ -142,6 +149,7 @@ class SuggestionController extends AbstractController
 
     /**
      * @Route("/comment/{id}/edit", name="suggestion_comment", methods={"GET","POST"})
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
      * @param Request $request
      * @param SuggestionRepository $suggestionRepository
      * @param Suggestion $suggestion
@@ -162,6 +170,7 @@ class SuggestionController extends AbstractController
 
     /**
      * @Route("/{id}", name="suggestion_delete", methods={"DELETE"})
+     * @IsGranted("ROLE_ADMIN")
      */
     public function delete(Request $request, Suggestion $suggestion): Response
     {

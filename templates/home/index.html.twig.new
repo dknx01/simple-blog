@@ -1,0 +1,52 @@
+{% extends 'layout/conatiner_fluid.html.twig' %}
+
+{% block title %}{{ name }}{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+
+
+    <div class="container">
+        <div class="row">
+        </div>
+        <div class="row">
+            <div class="col-8">
+                <div class="example-wrapper">
+                    {{ 'home.headline'|trans }}
+                    <ul>
+                        {% for name, entry in menue %}
+                            <li >
+                                {% if entry.arguments is not null %}
+                                    <a href="{{ path(entry.route, entry.arguments) }}">{{ ( name)|trans({}, 'menu') }}</a>
+                                {% else %}
+                                    <a href="{{ path(entry.route) }}">{{ ( name)|trans({}, 'menu') }}</a>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="card" style="width: 18rem;">
+                    <img src="..." class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Card title</h5>
+                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        <a href="#" class="btn btn-primary">Go somewhere</a>
+                    </div>
+                </div>
+                <div class="card" style="width: 18rem;">
+                    <img src="..." class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Card title</h5>
+                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        <a href="#" class="btn btn-primary">Go somewhere</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

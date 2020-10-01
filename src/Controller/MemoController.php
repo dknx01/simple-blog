@@ -6,6 +6,7 @@ use App\ContentLister\ContentLister;
 use App\Entity\Memo;
 use App\Form\MemoType;
 use App\Repository\MemoRepository;
+use Psr\Cache\InvalidArgumentException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,11 +21,12 @@ class MemoController extends AbstractController
 {
     /**
      * @Route("/new", name="memo_new", methods={"GET","POST"})
-     * @IsGranted("ROLE_ADMIN")
+     * @IsGranted("ROLE_EDITOR")
      * @param Request $request
      * @param MemoRepository $memoRepository
      * @param ContentLister $contentLister
      * @return Response
+     * @throws InvalidArgumentException
      */
     public function new(Request $request, MemoRepository $memoRepository, ContentLister $contentLister): Response
     {
@@ -35,7 +37,7 @@ class MemoController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
 
             $memoRepository->save($memo);
-            $contentLister->listContent(
+            $contentLister->refreshContent(
                 sprintf(
                     '/Stammtische/%s',
                     $memo->getType(),
@@ -52,7 +54,7 @@ class MemoController extends AbstractController
 
     /**
      * @Route("/{id}", name="memo_show", methods={"GET"})
-     * @IsGranted("ROLE_ADMIN")
+     * @IsGranted("ROLE_EDITOR")
      * @param Memo $memo
      * @return Response
      */

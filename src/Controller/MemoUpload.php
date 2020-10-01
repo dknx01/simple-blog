@@ -15,6 +15,7 @@ use App\Form\NewDocumentType;
 use App\MarkdownContent\MarkdownReader;
 use App\Repository\MemoRepository;
 use App\Repository\NewDocumentRepository;
+use Psr\Cache\InvalidArgumentException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Finder;
@@ -25,6 +26,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\String\AbstractString;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use function Symfony\Component\String\u;
 
@@ -45,7 +47,7 @@ class MemoUpload extends AbstractController
 
     /**
      * @Route("/upload", name="memo_upload")
-     * @IsGranted("ROLE_ADMIN")
+     * @IsGranted("ROLE_EDITOR")
      * @param Request $request
      * @param SluggerInterface $slugger
      * @return Response
@@ -88,13 +90,13 @@ class MemoUpload extends AbstractController
 
     /**
      * @Route("/edit/{path}", name="memo-edit", methods={"GET","POST"})
-     * @IsGranted("ROLE_ADMIN")
+     * @IsGranted("ROLE_EDITOR")
      * @param Request $request
      * @param MarkdownReader $markdownReader
      * @param MemoRepository $repository
      * @param ?string $path
      * @return Response
-     * @throws \Psr\Cache\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function memoEdit(
         Request $request,
@@ -140,13 +142,13 @@ class MemoUpload extends AbstractController
 
     /**
      * @Route("/new/{path}", name="new-document", methods={"GET","POST"})
-     * @IsGranted("ROLE_ADMIN")
+     * @IsGranted("ROLE_EDITOR")
      * @param Request $request
      * @param MarkdownReader $markdownReader
      * @param NewDocumentRepository $repository
      * @param string|null $path
      * @return Response
-     * @throws \Psr\Cache\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function newDocument(
         Request $request,
@@ -203,6 +205,7 @@ class MemoUpload extends AbstractController
 
     /**
      * @Route("/edit_list", name="memo-edit-list", methods={"GET"})
+     * @IsGranted("ROLE_EDITOR")
      * @return Response
      */
     public function memoEditList(): Response
@@ -229,7 +232,7 @@ class MemoUpload extends AbstractController
 
     /**
      * @param \Exception $exception
-     * @return string|\Symfony\Component\String\AbstractString
+     * @return string|AbstractString
      */
     private function sanitizeErrorMessage(\Exception $exception)
     {

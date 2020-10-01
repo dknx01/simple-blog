@@ -58,7 +58,7 @@ class WikiRepository
     {
         return function (ItemInterface $item) {
             $content = [];
-            foreach ((new Finder())->in($this->path)->files()->name('*.md')->sortByName(true) as $file) {
+            foreach ((new Finder())->in($this->path)->files()->name('*.md')->sort($this->sort()) as $file) {
                 $entry = u($file->getBasename())->beforeLast('.');
                 $fileName = u($file->getPathname())->replace($this->path, '')->beforeLast('.')->toString();
                 $content[$entry->slice(0,1)->upper()->toString()][$entry->toString()] = $fileName;
@@ -103,5 +103,12 @@ class WikiRepository
 
         $this->cache->delete('all');
         $this->findAll();
+    }
+
+    private function sort(): \Closure
+    {
+        return static function (\SplFileInfo $a, \SplFileInfo $b) {
+            return strnatcasecmp($a->getRealPath() ?: $a->getPathname(), $b->getRealPath() ?: $b->getPathname());
+        };
     }
 }

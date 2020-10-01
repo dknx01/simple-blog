@@ -34,7 +34,6 @@ class WikiController extends AbstractController
      * @param Request $request
      * @param WikiRepository $wikiRepository
      * @return Response
-     * @todo refactore
      */
     public function new(Request $request, WikiRepository $wikiRepository): Response
     {

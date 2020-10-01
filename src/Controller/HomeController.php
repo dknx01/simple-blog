@@ -152,6 +152,7 @@ class HomeController extends AbstractController
 
     /**
      * @Route("layout", name="layout")
+     * @IsGranted("ROLE_ADMIN")
      * @return Response
      */
     public function layout(): Response

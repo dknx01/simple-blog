@@ -38,7 +38,7 @@ class DocumentFolderController extends AbstractController
 
     /**
      * @Route("/list/", name="document_folder_list", methods={"GET"})
-     * @IsGranted("ROLE_ADMIN")
+     * @IsGranted("ROLE_EDITOR")
      * @return Response
      */
     public function list() :Response
@@ -83,7 +83,7 @@ class DocumentFolderController extends AbstractController
 
     /**
      * @Route("/new/{path}", name="document_folder_new", methods={"GET", "POST"})
-     * @IsGranted("ROLE_ADMIN")
+     * @IsGranted("ROLE_EDITOR")
      * @param string $path
      * @param Request $request
      * @return Response
