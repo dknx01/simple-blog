@@ -2,14 +2,14 @@
 
 {% block title %}{{ 'headline'|trans({}, 'suggestion') }}{% endblock %}
 
-{% block content_header %}Create new Suggestion{% endblock %}
+{% block content_header %}{{ 'headline'|trans({}, 'suggestion') }}{% endblock %}
 {% block card_body %}
     {% for message in app.flashes('error') %}
         <div class="alert alert-danger">{{ message }}</div>
     {% endfor %}
     {{ include('suggestion/_form.html.twig') }}
 
-    <a href="{{ path('suggestion_index') }}">back to list</a>
+    <a href="{{ path('suggestion_index') }}">{{ 'back.to.list'|trans({}, 'suggestion') }}</a>
 {% endblock %}
 
 

@@ -25,17 +25,27 @@ class SuggestionController extends AbstractController
         $this->workflowRegistry = $workflowRegistry;
     }
     /**
-     * @Route("/{excludeClosed}", name="suggestion_index", methods={"GET"})
+     * @Route("/", name="suggestion_index", methods={"GET"}))
      */
-    public function index(SuggestionRepository $suggestionRepository, string $excludeClosed = ''): Response
+    public function index(SuggestionRepository $suggestionRepository): Response
     {
-        if ($excludeClosed !== '') {
-            $suggestions = $suggestionRepository->findAllNotClosed();
-        } else {
-            $suggestions = $suggestionRepository->findAll();
+        return $this->render('suggestion/index.html.twig', [
+            'suggestions' => $suggestionRepository->findAll(),
+            'excludeClosed' => false
+        ]);
+    }
+
+    /**
+     * @Route("/sort/{excludeClosed}", name="suggestion_index_sorted", methods={"GET"}))
+     */
+    public function indexSorted(SuggestionRepository $suggestionRepository, string $excludeClosed = ''): Response
+    {
+        if ($excludeClosed === '') {
+            return $this->redirectToRoute('suggestion_index');
         }
         return $this->render('suggestion/index.html.twig', [
-            'suggestions' => $suggestions,
+            'suggestions' => $suggestionRepository->findAllNotClosed(),
+            'excludeClosed' => true
         ]);
     }
 

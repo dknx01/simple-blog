@@ -38,3 +38,6 @@ errors:
     'over due': 'Diese(r) Idee/Vorschlag kann nicht wegen "Überfällig" geschlossen werden'
     'not accepted': 'Diese(r) Idee/Vorschlag kann nicht wegen "Nicht akzeptiert" geschlossen werden'
     'irrelevant': 'Diese(r) Idee/Vorschlag kann nicht wegen "Irrelevant" geschlossen werden'
+back:
+  to:
+    list: 'Zurück zur Übersicht'

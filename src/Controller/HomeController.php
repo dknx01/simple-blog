@@ -87,7 +87,7 @@ class HomeController extends AbstractController
         return $this->render('home/link-collection.html.twig', [
             'controller_name' => 'Linksammlung',
             'content' => $content,
-            'header' => 'pages.linklist'
+            'header' => 'Linksammlung'
         ]);
     }
 
@@ -103,7 +103,7 @@ class HomeController extends AbstractController
         return $this->render('home/link-collection.html.twig', [
             'controller_name' => 'Neu dabei!?',
             'content' => $content,
-            'header' => 'pages.newbee'
+            'header' => 'Neu dabei!?'
         ]);
     }
 

@@ -9,87 +9,75 @@
         <div class="alert alert-danger">{{ ('errors.transitions.'~message)|trans({}, 'suggestion')}}</div>
     {% endfor %}
     <div>
-        {% if app.request.get('excludeClosed') != '' %}
+        {% if excludeClosed %}
             <a class="btn btn-outline-dark btn-sm" href="{{ path('suggestion_index') }}">Mit geschlossenen</a>
         {% else %}
-            <a class="btn btn-outline-dark btn-sm" href="{{ path('suggestion_index', {'excludeClosed': 'offene'}) }}">Ohne geschlossene</a>
+            <a class="btn btn-outline-dark btn-sm" href="{{ path('suggestion_index_sorted', {'excludeClosed': 'offene'}) }}">Ohne geschlossene</a>
         {% endif %}
     </div>
-    <div class="table-responsive">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>{{ 'summary'|trans({}, 'suggestion') }}</th>
-                    <th>{{ 'content'|trans({}, 'suggestion') }}</th>
-                    <th>{{ 'currentstate'|trans({}, 'suggestion') }}</th>
-                    <th>{{ 'comments'|trans({}, 'suggestion') }}</th>
-                    <th>{{ 'actions'|trans({}, 'suggestion') }}</th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for suggestion in suggestions %}
-                <tr>
-                    <td>{{ suggestion.id }}</td>
-                    <td>
-                        {{ suggestion.summary }}
-                    </td>
-                    <td>
-                        {{ suggestion.content|raw }}
-                    </td>
-                    <td>
-                        {% if workflow_has_marked_place(suggestion, 'new') %}
-                            <span class="badge badge-dark">{{ 'status.new'|trans({}, 'suggestion') }}</span>
-                        {% endif %}
-                        {% if workflow_has_marked_place(suggestion, 'discussing') %}
-                            <span class="badge badge-info">{{ 'status.discussing'|trans({}, 'suggestion') }}</span>
-                        {% endif %}
-                        {% if workflow_has_marked_place(suggestion, 'for later') %}
-                            <span class="badge badge-warning">{{ 'status.later'|trans({}, 'suggestion') }}</span>
-                        {% endif %}
-                        {% if workflow_has_marked_place(suggestion, 'accepted') %}
-                            <span class="badge badge-success">{{ 'status.accepted'|trans({}, 'suggestion') }}</span>
-                        {% endif %}
-                        {% if workflow_has_marked_place(suggestion, 'closed') %}
-                            <span class="badge badge-danger">{{ 'status.closed'|trans({}, 'suggestion') }}</span>
-                        {% endif %}
-                    </td>
-                    <td>{{ suggestion.comments|raw }}</td>
-                    <td>
-                        <a href="{{ path('suggestion_comment', {'id': suggestion.id}) }}">{{ 'add_comment'|trans({}, 'suggestion') }}</a>
-                        <div>
-                            {% if is_granted('ROLE_ADMIN') %}
-                                {% for transition in workflow_transitions(suggestion) %}
-                                    {% if transition.name == 'consider for discussing' %}
-                                        <a class="btn-sm btn-info" href="{{ path('suggestion_transition', {'id':suggestion.id, 'transition':transition.name|url_encode }) }}" role="button">{{ 'transition.discuss'|trans({}, 'suggestion') }}</a>
-                                    {% elseif  transition.name == 'accpeted' %}
-                                        <a class="btn-sm btn-success" href="{{ path('suggestion_transition', {'id':suggestion.id, 'transition':transition.name|url_encode }) }}" role="button">{{ 'transition.accept'|trans({}, 'suggestion') }}</a>
-                                    {% elseif  transition.name == 'considered for later' %}
-                                        <a class="btn-sm btn-warning" href="{{ path('suggestion_transition', {'id':suggestion.id, 'transition':transition.name|url_encode }) }}" role="button">{{ 'transition.for_later'|trans({}, 'suggestion') }}</a>
-                                    {% elseif  transition.name == 'done' %}
-                                        <a class="btn-sm btn-danger" href="{{ path('suggestion_transition', {'id':suggestion.id, 'transition':transition.name|url_encode }) }}" role="button">{{ 'transition.done'|trans({}, 'suggestion') }}</a>
-                                    {% elseif  transition.name == 'over due' %}
-                                        <a class="btn-sm btn-danger" href="{{ path('suggestion_transition', {'id':suggestion.id, 'transition':transition.name|url_encode }) }}" role="button">{{ 'transition.to_late'|trans({}, 'suggestion') }}</a>
-                                    {% elseif  transition.name == 'not accepted' %}
-                                        <a class="btn-sm btn-danger" href="{{ path('suggestion_transition', {'id':suggestion.id, 'transition':transition.name|url_encode }) }}" role="button">{{ 'transition.rejected'|trans({}, 'suggestion') }}</a>
-                                    {% elseif  transition.name == 'irrelevant' %}
-                                        <a class="btn-sm btn-danger" href="{{ path('suggestion_transition', {'id':suggestion.id, 'transition':transition.name|url_encode }) }}" role="button">{{ 'transition.irrelevant'|trans({}, 'suggestion') }}</a>
-                                    {% endif %}
-                                {% else %}
-                                    {{ 'no_action_possible'|trans({}, 'suggestion') }}
-                                {% endfor %}
-                            {% endif %}
+
+    {% for suggestion in suggestions %}
+        <div class="card">
+            <div class="card-header" data-toggle="collapse" href="#collapse{{ suggestion.id }}" role="button" aria-expanded="false" aria-controls="collapse{{ suggestion.id }}">
+                <h5 class="card-title">{{ suggestion.summary }}{{ _self.currentStatus(suggestion) }}</h5>
+            </div>
+            <div class="card-body collapse" id="collapse{{ suggestion.id }}">
+                <h6 class="card-subtitle mb-2 text-muted">{{ 'content'|trans({}, 'suggestion') }}</h6>
+                {{ suggestion.content|raw }}
+                {% if suggestion.comments|length %}
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ 'comments'|trans({}, 'suggestion') }}</h5>
+                            {{ suggestion.comments|raw }}
                         </div>
-                    </td>
-                </tr>
-            {% else %}
-                <tr>
-                    <td colspan="7">{{ 'nothing_found'|trans({}, 'suggestion') }}</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
+                    </div>
+                {% endif %}
+                <div class="card-footer text-muted">
+                    <h6 class="card-subtitle mb-2 text-muted">{{ 'actions'|trans({}, 'suggestion') }}</h6>
+                    <a href="{{ path('suggestion_comment', {'id': suggestion.id}) }}" class="card-link">{{ 'add_comment'|trans({}, 'suggestion') }}</a>
+                    {% if is_granted('ROLE_ADMIN') %}
+                        {% for transition in workflow_transitions(suggestion) %}
+                            {% if transition.name == 'consider for discussing' %}
+                                <a class="btn-sm btn-info card-link" href="{{ path('suggestion_transition', {'id':suggestion.id, 'transition':transition.name|url_encode }) }}" role="button">{{ 'transition.discuss'|trans({}, 'suggestion') }}</a>
+                            {% elseif  transition.name == 'accpeted' %}
+                                <a class="btn-sm btn-success" href="{{ path('suggestion_transition', {'id':suggestion.id, 'transition':transition.name|url_encode }) }}" role="button">{{ 'transition.accept'|trans({}, 'suggestion') }}</a>
+                            {% elseif  transition.name == 'considered for later' %}
+                                <a class="btn-sm btn-warning card-link" href="{{ path('suggestion_transition', {'id':suggestion.id, 'transition':transition.name|url_encode }) }}" role="button">{{ 'transition.for_later'|trans({}, 'suggestion') }}</a>
+                            {% elseif  transition.name == 'done' %}
+                                <a class="btn-sm btn-danger card-link" href="{{ path('suggestion_transition', {'id':suggestion.id, 'transition':transition.name|url_encode }) }}" role="button">{{ 'transition.done'|trans({}, 'suggestion') }}</a>
+                            {% elseif  transition.name == 'over due' %}
+                                <a class="btn-sm btn-danger card-link" href="{{ path('suggestion_transition', {'id':suggestion.id, 'transition':transition.name|url_encode }) }}" role="button">{{ 'transition.to_late'|trans({}, 'suggestion') }}</a>
+                            {% elseif  transition.name == 'not accepted' %}
+                                <a class="btn-sm btn-danger card-link" href="{{ path('suggestion_transition', {'id':suggestion.id, 'transition':transition.name|url_encode }) }}" role="button">{{ 'transition.rejected'|trans({}, 'suggestion') }}</a>
+                            {% elseif  transition.name == 'irrelevant' %}
+                                <a class="btn-sm btn-danger card-link" href="{{ path('suggestion_transition', {'id':suggestion.id, 'transition':transition.name|url_encode }) }}" role="button">{{ 'transition.irrelevant'|trans({}, 'suggestion') }}</a>
+                            {% endif %}
+                        {% else %}
+                            {{ 'no_action_possible'|trans({}, 'suggestion') }}
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% endfor %}
 
     <a href="{{ path('suggestion_new') }}">{{ 'create.new'|trans({}, 'suggestion') }}</a>
 {% endblock %}
+
+{% macro currentStatus(suggestion) %}
+    {% if workflow_has_marked_place(suggestion, 'new') %}
+        <span class="badge badge-dark">{{ 'status.new'|trans({}, 'suggestion') }}</span>
+    {% endif %}
+    {% if workflow_has_marked_place(suggestion, 'discussing') %}
+        <span class="badge badge-info">{{ 'status.discussing'|trans({}, 'suggestion') }}</span>
+    {% endif %}
+    {% if workflow_has_marked_place(suggestion, 'for later') %}
+        <span class="badge badge-warning">{{ 'status.later'|trans({}, 'suggestion') }}</span>
+    {% endif %}
+    {% if workflow_has_marked_place(suggestion, 'accepted') %}
+        <span class="badge badge-success">{{ 'status.accepted'|trans({}, 'suggestion') }}</span>
+    {% endif %}
+    {% if workflow_has_marked_place(suggestion, 'closed') %}
+        <span class="badge badge-danger">{{ 'status.closed'|trans({}, 'suggestion') }}</span>
+    {% endif %}
+{% endmacro %}
