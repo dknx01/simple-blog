@@ -1,0 +1,55 @@
+framework:
+    workflows:
+        suggestions:
+            type: 'state_machine'
+            audit_trail:
+                enabled: true
+            marking_store:
+                type: 'method'
+                property: 'currentState'
+            supports:
+                - App\Entity\Suggestion
+            initial_marking: created
+            places:
+                - created
+                - 'new'
+                - 'discussing'
+                - accepted
+                - 'for later'
+                - closed
+            transitions:
+                'created':
+                    from: created
+                    to:
+                        - 'new'
+                'consider for discussing':
+                    from:
+                        - 'new'
+                        - 'for later'
+                    to:
+                        - 'discussing'
+                'accpeted':
+                    from:
+                        - 'discussing'
+                    to: accepted
+                'considered for later':
+                    from:
+                        - 'discussing'
+                    to:
+                        - 'for later'
+                'done':
+                    from:
+                        - accepted
+                    to: closed
+                'over due':
+                    from:
+                        - 'for later'
+                    to: closed
+                'not accepted':
+                    from:
+                        - 'discussing'
+                    to: closed
+                'irrelevant':
+                    from:
+                        - 'new'
+                    to: closed

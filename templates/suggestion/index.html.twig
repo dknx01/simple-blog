@@ -1,0 +1,80 @@
+{% extends 'layout/conatiner_fluid.html.twig' %}
+
+{% block title %}Suggestion index{% endblock %}
+{% block content_header %}Suggestion index{% endblock %}
+
+{% block card_body %}
+    <h1>Suggestion index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Summary</th>
+                <th>Content</th>
+                <th>CurrentState</th>
+                <th>Comments</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for suggestion in suggestions %}
+            <tr>
+                <td>{{ suggestion.id }}</td>
+                <td>
+                    {{ suggestion.summary }}
+                </td>
+                <td>
+                    {{ suggestion.content|raw }}
+                </td>
+                <td>
+                    {% if workflow_has_marked_place(suggestion, 'new') %}
+                        <span class="badge badge-dark">This post is new.</span>
+                    {% endif %}
+                    {% if workflow_has_marked_place(suggestion, 'discussing') %}
+                        <span class="badge badge-info">This post is in discussion.</span>
+                    {% endif %}
+                    {% if workflow_has_marked_place(suggestion, 'for later') %}
+                        <span class="badge badge-warning">This post is considered for later.</span>
+                    {% endif %}
+                    {% if workflow_has_marked_place(suggestion, 'accpeted') %}
+                        <span class="badge badge-success">This post is accepted.</span>
+                    {% endif %}
+                    {% if workflow_has_marked_place(suggestion, 'closed') %}
+                        <span class="badge badge-danger">This post is closed.</span>
+                    {% endif %}
+                </td>
+                <td>{{ suggestion.comments }}</td>
+                <td>
+                    a href="{{ path('suggestion_show', {'id': suggestion.id}) }}">Add Comment</a>
+                    {% for transition in workflow_transitions(suggestion) %}
+                        {% if transition.name == 'consider for discussing' %}
+                            {{ transition.name }} <a class="btn-sm btn-info" href="#" role="button">Zu diskutieren</a>
+                        {% elseif  transition.name == 'accpeted' %}
+                            {{ transition.name }} <a class="btn-sm btn-success" href="#" role="button">Akzeptiert</a>
+                        {% elseif  transition.name == 'considered for later' %}
+                            {{ transition.name }} <a class="btn-sm btn-warning" href="#" role="button">Für später vormerke</a>
+                        {% elseif  transition.name == 'done' %}
+                            {{ transition.name }} <a class="btn-sm btn-danger" href="#" role="button">Erledigt</a>
+                        {% elseif  transition.name == 'over due' %}
+                            {{ transition.name }} <a class="btn-sm btn-danger" href="#" role="button">Erledigt, wegen zu spät</a>
+                        {% elseif  transition.name == 'not accepted' %}
+                            {{ transition.name }} <a class="btn-sm btn-danger" href="#" role="button">Abgelehnt</a>
+                        {% elseif  transition.name == 'irrelevant' %}
+                            {{ transition.name }} -  <a class="btn-sm btn-danger" href="#" role="button">Schliesen wegen irrelvant</a>
+                        {% endif %}
+                    {% else %}
+                        Keine Änderung möglich
+                    {% endfor %}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('suggestion_new') }}">Create new</a>
+{% endblock %}

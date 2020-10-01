@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+
+<title>Suggestion</title>
+
+{% block body %}
+    <h1>Suggestion</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ suggestion.id }}</td>
+            </tr>
+            <tr>
+                <th>Name</th>
+                <td>{{ suggestion.name }}</td>
+            </tr>
+            <tr>
+                <th>Summary</th>
+                <td>{{ suggestion.summary }}</td>
+            </tr>
+            <tr>
+                <th>Content</th>
+                <td>{{ suggestion.content }}</td>
+            </tr>
+            <tr>
+                <th>CurrentState</th>
+                <td>{{ suggestion.currentState }}</td>
+            </tr>
+            <tr>
+                <th>Comments</th>
+                <td>{{ suggestion.comments }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('suggestion_index') }}">back to list</a>
+
+    <a href="{{ path('suggestion_edit', {'id': suggestion.id}) }}">edit</a>
+
+    {{ include('suggestion/_delete_form.html.twig') }}
+{% endblock %}

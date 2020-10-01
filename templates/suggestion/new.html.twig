@@ -1,0 +1,51 @@
+{% extends 'layout/conatiner_fluid.html.twig' %}
+
+{% block title %}{{ 'headline'|trans({}, 'suggestion') }}{% endblock %}
+
+{% block content_header %}Create new Suggestion{% endblock %}
+{% block card_body %}
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-danger">{{ message }}</div>
+    {% endfor %}
+    {{ include('suggestion/_form.html.twig') }}
+
+    <a href="{{ path('suggestion_index') }}">back to list</a>
+{% endblock %}
+
+
+{% block javascripts %}
+    <link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
+    <script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
+    <script>
+        var easyMDEContent = new EasyMDE({
+            autofocus: true,
+            autosave: {
+                enabled: true,
+                uniqueId: "{{ uuid() }}",
+                delay: 1000,
+                submit_delay: 5000,
+                timeFormat: {
+                    locale: 'en-US',
+                    format: {
+                        year: 'numeric',
+                        month: 'long',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                    },
+                },
+                text: "Autosaved: "
+            },
+            toolbar: [
+                "bold", "italic", "strikethrough", "|",
+                "heading", "heading-smaller", "heading-bigger", "|",
+                "quote", "code", "|",
+                "unordered-list", "ordered-list", "|",
+                "link", "image", "table", "horizontal-rule", "|",
+                "preview", "side-by-side", "|",
+                "guide"
+            ]
+        });
+    </script>
+    {{ parent() }}
+{% endblock %}

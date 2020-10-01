@@ -54,6 +54,12 @@ class MarkdownReader
         );
     }
 
+    public function parseString(string $content): string
+    {
+        $content = Markdown::defaultTransform($content);
+        return $this->parseMermaid($content);
+    }
+
     private function parseFile(string $path): \Closure
     {
         return function(ItemInterface $item) use ($path) {
