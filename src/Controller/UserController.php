@@ -13,12 +13,24 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @Route("/admin")
  */
 class UserController extends AbstractController
 {
+    private TranslatorInterface $translator;
+
+    /**
+     * UserController constructor.
+     * @param TranslatorInterface $translator
+     */
+    public function __construct(TranslatorInterface $translator)
+    {
+        $this->translator = $translator;
+    }
+
     /**
      * @Route("/benutzer/übersicht", name="user_list")
      * @IsGranted("ROLE_ADMIN")
@@ -27,7 +39,13 @@ class UserController extends AbstractController
      */
     public function list(UserRepository $userRepository): Response
     {
-        return $this->render('user/list.html.twig', ['name' => 'Benutzerübersicht', 'users' => $userRepository->findAll()]);
+        return $this->render(
+            'user/list.html.twig',
+            [
+                'name' => $this->translator->trans('user.overview', [], 'pages'),
+                'users' => $userRepository->findAll()
+            ]
+        );
     }
 
     /**
@@ -44,7 +62,7 @@ class UserController extends AbstractController
         $errors = [];
         $user = $userRepository->find($id);
         if ($user === null) {
-            $errors[] = 'Der Benutzer konnte nicht gefunden werden';
+            $errors[] = $this->translator->trans('user.errors.user not found', [], 'pages');
         }
 
         if ($user instanceof User && $request->getMethod() === 'POST'
@@ -57,7 +75,14 @@ class UserController extends AbstractController
                 return $this->redirectToRoute('user_list');
             }
         }
-        return $this->render('user/edit.html.twig', ['name' => 'Benutzer bearbeiten', 'user' => $user, 'errors' => $errors]);
+        return $this->render(
+            'user/edit.html.twig',
+            [
+                'name' => $this->translator->trans('user.edit', [], 'pages'),
+                'user' => $user,
+                'errors' => $errors
+            ]
+        );
     }
 
     /**
@@ -85,11 +110,18 @@ class UserController extends AbstractController
                     $user = $userRepository->save($user);
                     return $this->redirectToRoute('user_list');
                 } catch (UniqueConstraintViolationException $exception) {
-                    $errors[] = 'Username ist schon vergeben';
+                    $errors[] = $this->translator->trans('user.errors.user already exists', [], 'pages');
                 }
             }
         }
-        return $this->render('user/new.html.twig', ['name' => 'Benutzer anlegen', 'user' => $user, 'errors' => $errors]);
+        return $this->render(
+            'user/new.html.twig',
+            [
+                'name' => $this->translator->trans('user.new', [], 'pages'),
+                'user' => $user,
+                'errors' => $errors
+            ]
+        );
     }
 
     /**
@@ -106,8 +138,15 @@ class UserController extends AbstractController
         $errors = [];
         $user = $userRepository->find($id);
         if ($user === null) {
-            $errors[] = 'Der Benutzer konnte nicht gefunden werden';
-            return $this->render('user/delete.html.twig', ['name' => 'Benutzer löschen', 'user' => $user, 'errors' => $errors]);
+            $errors[] = $this->translator->trans('user.errors.user not found', [], 'pages');
+            return $this->render(
+                'user/delete.html.twig',
+                [
+                    'name' => $this->translator->trans('user.delete', [], 'pages'),
+                    'user' => $user,
+                    'errors' => $errors
+                ]
+            );
         }
 
         $userRepository->delete($user);
@@ -124,13 +163,23 @@ class UserController extends AbstractController
     private function handleUserUpdate(Request $request, User $user, UserPasswordEncoderInterface $passwordEncoder, array $errors): array
     {
         if ($request->request->get('username') === '') {
-            $errors[] = 'Username darf nicht leer sein';
+            $errors[] = $this->translator->trans('user.errors.name not empty', [], 'pages');
         }
-        if ($request->request->has('admin') && $request->request->get('admin') === 1) {
-            $user->setRoles(['ROLE_ADMIN']);
+
+        $roles = [];
+        if (!$request->request->has('admin') && !$request->request->has('editor')) {
+            $roles[] = 'ROLE_USER';
         } else {
-            $user->setRoles(['ROLE_USER']);
+            if ($request->request->has('admin') && $request->request->get('admin') === '1') {
+                $roles[] = 'ROLE_ADMIN';
+            }
+            if ($request->request->has('editor') && $request->request->get('editor') === '1') {
+                $roles[] = 'ROLE_EDITOR';
+            }
         }
+
+        $user->setRoles($roles);
+
         if ($request->request->get('password') !== '') {
             $user->setPassword($passwordEncoder->encodePassword($user, $request->request->get('password')));
         }

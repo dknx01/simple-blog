@@ -10,12 +10,18 @@ memo:
     title: 'Edit Memo'
   new: 'Neues Memo'
   upload: 'Upload Memo'
+  uploads: 'Upload Memos'
   delete:
     button: 'Löschen'
     info: 'Löschen von %file_name%'
     really: 'Endgültig löschen'
     question: 'Soll <span class="font-weight-bold">%filename%</span> wirklich gelöscht werden?'
   headline: 'Memo'
+  overview: 'Übersicht Memos'
+  error:
+    'path invalid': 'Kein gültiger Pfad'
+  'delete file': 'Datei Löschen'
+  'edit content overview': 'Übersicht Inhalte'
 user:
   new: 'Benutzer anlegen'
   overview: 'Benutzerübersicht'
@@ -25,12 +31,29 @@ user:
     username: 'Username'
     passwort: 'Passwort'
     admin: 'Admin'
+    editor: 'Editor'
+  errors:
+    'user not found': 'Der Benutzer konnte nicht gefunden werden'
+    'user already exists': 'Username ist schon vergeben'
+    'name not empty': 'Username darf nicht leer sein'
 document_folder:
   header: 'Dokumentenordner'
   documents: 'Dokumente'
   new_folder: 'Neuer Ordner'
+  create_new_folder: 'Dokumentenordner anlegen'
   new_document: 'Neues Dokument'
   new_folder_page:
     headline: 'Neuen Ordner anlegen'
     under: 'Unterhalb von: %parent%'
     name: 'Ordnername'
+  error:
+    empty: 'Ordnername darf nicht leer sein'
+    already_exists: 'Ordner existiert schon'
+    generic: 'Es gab einen Fehler beim erstellen des Ordners %folder%'
+cache:
+  delete_content_cache: 'Inhaltscache leeren'
+  delete_whole_cache: 'Gesamten cache leeren'
+  cleared: 'Cache geleert'
+stammtisch: 'Stammtische %path%'
+document:
+  header: 'Dokumente/%path%'

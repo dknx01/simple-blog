@@ -28,6 +28,7 @@ use Symfony\Component\Process\Process;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\AbstractString;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use function Symfony\Component\String\u;
 
 /**
@@ -36,13 +37,16 @@ use function Symfony\Component\String\u;
 class MemoUpload extends AbstractController
 {
     private string $dataPath;
+    private TranslatorInterface $translator;
 
     /**
      * @param string $dataPath
+     * @param TranslatorInterface $translator
      */
-    public function __construct(string $dataPath)
+    public function __construct(string $dataPath, TranslatorInterface $translator)
     {
         $this->dataPath = $dataPath;
+        $this->translator = $translator;
     }
 
     /**
@@ -83,7 +87,7 @@ class MemoUpload extends AbstractController
             }
         }
         return $this->render('memo/upload.html.twig', [
-            'name' => 'Upload Memos',
+            'name' => $this->translator->trans('memo.uploads', [], 'pages'),
             'form' => $form->createView(),
         ]);
     }
@@ -107,7 +111,7 @@ class MemoUpload extends AbstractController
     {
         $errors = [];
         if ($path === null && $request->getMethod() === 'GET') {
-            $errors[] = 'No valid path';
+            $errors[] = $this->translator->trans('memo.error.path invalid', [], 'pages');
         }
 
         $memoEdit = new MemoEdit();
@@ -200,7 +204,13 @@ class MemoUpload extends AbstractController
             unlink($this->dataPath . '/' . urldecode($path));
             return  $this->redirectToRoute('memo-edit-list');
         }
-        return $this->render('memo/delete.html.twig', ['name' => 'Datei Löschen', 'filename' => urldecode($path)]);
+        return $this->render(
+            'memo/delete.html.twig',
+            [
+                'name' => $this->translator->trans('memo.delete file', [], 'pages'),
+                'filename' => urldecode($path)
+            ]
+        );
     }
 
     /**
@@ -225,7 +235,7 @@ class MemoUpload extends AbstractController
         }
 
         return $this->render('memo/edit-list.html.twig', [
-            'name' => 'Übersicht Inhalte',
+            'name' => $this->translator->trans('memo.edit content overview', [], 'pages'),
             'content' => $content
         ]);
     }

@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use function Symfony\Component\String\u;
 
 class HomeController extends AbstractController
@@ -26,6 +27,7 @@ class HomeController extends AbstractController
      */
     private Pdf $snappy;
     private string $newbeePath;
+    private TranslatorInterface $translator;
 
     /**
      * HomeController constructor.
@@ -34,19 +36,22 @@ class HomeController extends AbstractController
      * @param string $linkCollectionPath
      * @param Pdf $pdf
      * @param string $newbeePath
+     * @param TranslatorInterface $translator
      */
     public function __construct(
         string $dataPath,
         ContentLister $contentLister,
         string $linkCollectionPath,
         Pdf $pdf,
-        string $newbeePath
+        string $newbeePath,
+        TranslatorInterface $translator
     ) {
         $this->dataPath = $dataPath;
         $this->contentLister = $contentLister;
         $this->linkCollectionPath = $linkCollectionPath;
         $this->snappy = $pdf;
         $this->newbeePath = $newbeePath;
+        $this->translator = $translator;
     }
 
     /**
@@ -55,7 +60,7 @@ class HomeController extends AbstractController
     public function index(): Response
     {
         return $this->render('home/index.html.twig', [
-            'name' => 'Übersicht Memos'
+            'name' => $this->translator->trans('memo.overview', [], 'pages')
         ]);
     }
 
@@ -70,7 +75,7 @@ class HomeController extends AbstractController
         $content = $this->contentLister->getContentForFile(urldecode($path));
 
         return $this->render('home/memo.html.twig', [
-            'controller_name' => 'Memo',
+            'controller_name' => $this->translator->trans('memo.headline', [], 'pages'),
             'content' => $content
         ]);
     }
@@ -85,9 +90,9 @@ class HomeController extends AbstractController
         $content = $this->contentLister->getContentForFile($this->linkCollectionPath);
 
         return $this->render('home/link-collection.html.twig', [
-            'controller_name' => 'Linksammlung',
+            'controller_name' => $this->translator->trans('linklist.name', [], 'pages'),
             'content' => $content,
-            'header' => 'Linksammlung'
+            'header' => $this->translator->trans('linklist.name', [], 'pages')
         ]);
     }
 
@@ -101,9 +106,9 @@ class HomeController extends AbstractController
         $content = $this->contentLister->getContentForFile($this->newbeePath);
 
         return $this->render('home/link-collection.html.twig', [
-            'controller_name' => 'Neu dabei!?',
+            'controller_name' => $this->translator->trans('newbee', [], 'pages'),
             'content' => $content,
-            'header' => 'Neu dabei!?'
+            'header' => $this->translator->trans('newbee', [], 'pages')
         ]);
     }
 
@@ -130,7 +135,7 @@ class HomeController extends AbstractController
     {
         $content = $this->contentLister->listContent('/Stammtische/' . $path);
         return $this->render('home/list.html.twig', [
-            'name' => 'Stammtische ' . $path,
+            'name' => $this->translator->trans('stammtisch', ['%path%' => $path], 'pages'),
             'content' => $content
         ]);
     }
@@ -145,7 +150,7 @@ class HomeController extends AbstractController
     {
         $content = $this->contentLister->listContent('/Dokumente/' . \urldecode($path));
         return $this->render('home/list.html.twig', [
-            'name' => 'Dokumente/' . $path,
+            'name' => $this->translator->trans('document.header', ['%path%' => $path], 'pages'),
             'content' => $content
         ]);
     }

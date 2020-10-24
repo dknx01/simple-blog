@@ -25,9 +25,12 @@ class SuggestionController extends AbstractController
     {
         $this->workflowRegistry = $workflowRegistry;
     }
+
     /**
      * @Route("/", name="suggestion_index", methods={"GET"}))
      * @IsGranted("IS_AUTHENTICATED_FULLY")
+     * @param SuggestionRepository $suggestionRepository
+     * @return Response
      */
     public function index(SuggestionRepository $suggestionRepository): Response
     {
@@ -40,6 +43,9 @@ class SuggestionController extends AbstractController
     /**
      * @Route("/sort/{excludeClosed}", name="suggestion_index_sorted", methods={"GET"}))
      * @IsGranted("IS_AUTHENTICATED_FULLY")
+     * @param SuggestionRepository $suggestionRepository
+     * @param string $excludeClosed
+     * @return Response
      */
     public function indexSorted(SuggestionRepository $suggestionRepository, string $excludeClosed = ''): Response
     {
@@ -55,6 +61,9 @@ class SuggestionController extends AbstractController
     /**
      * @Route("/new", name="suggestion_new", methods={"GET","POST"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
+     * @param Request $request
+     * @param MarkdownReader $markdownReader
+     * @return Response
      */
     public function new(Request $request, MarkdownReader $markdownReader): Response
     {
@@ -93,6 +102,8 @@ class SuggestionController extends AbstractController
     /**
      * @Route("/{id}", name="suggestion_show", methods={"GET"})
      * @IsGranted("IS_AUTHENTICATED_FULLY")
+     * @param Suggestion $suggestion
+     * @return Response
      */
     public function show(Suggestion $suggestion): Response
     {
@@ -104,6 +115,9 @@ class SuggestionController extends AbstractController
     /**
      * @Route("/{id}/edit", name="suggestion_edit", methods={"GET","POST"})
      * @IsGranted("ROLE_ADMIN")
+     * @param Request $request
+     * @param Suggestion $suggestion
+     * @return Response
      */
     public function edit(Request $request, Suggestion $suggestion): Response
     {
@@ -171,6 +185,9 @@ class SuggestionController extends AbstractController
     /**
      * @Route("/{id}", name="suggestion_delete", methods={"DELETE"})
      * @IsGranted("ROLE_ADMIN")
+     * @param Request $request
+     * @param Suggestion $suggestion
+     * @return Response
      */
     public function delete(Request $request, Suggestion $suggestion): Response
     {

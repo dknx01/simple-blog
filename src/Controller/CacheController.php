@@ -7,6 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\CacheClearer\CacheClearerInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @Route("/admin")
@@ -14,13 +15,16 @@ use Symfony\Component\Routing\Annotation\Route;
 class CacheController extends AbstractController
 {
     private CacheClearerInterface $cacheClearer;
+    private TranslatorInterface $translator;
 
     /**
      * @param CacheClearerInterface $globalClearer
+     * @param TranslatorInterface $translator
      */
-    public function __construct(CacheClearerInterface $globalClearer)
+    public function __construct(CacheClearerInterface $globalClearer, TranslatorInterface $translator)
     {
         $this->cacheClearer = $globalClearer;
+        $this->translator = $translator;
     }
 
     /**
@@ -32,9 +36,9 @@ class CacheController extends AbstractController
     {
         $this->cacheClearer->clear('');
         return $this->render('home/default.html.twig', [
-            'title' => 'Inhaltscache leeren',
-            'controller_name' => 'Inhaltscache leeren',
-            'content' => 'Cache geleert'
+            'title' => $this->translator->trans('cache.delete_content_cache', [], 'pages'),
+            'controller_name' => $this->translator->trans('cache.delete_content_cache', [], 'pages'),
+            'content' => $this->translator->trans('cache.cleared', [], 'pages')
         ]);
     }
 
@@ -47,9 +51,9 @@ class CacheController extends AbstractController
     {
         $this->cacheClearer->clear('');
         return $this->render('home/default.html.twig', [
-            'title' => 'Gesamten Cache leeren',
-            'controller_name' => 'Gesamten cache leeren',
-            'content' => 'Cache geleert'
+            'title' => $this->translator->trans('cache.delete_whole_cache', [], 'pages'),
+            'controller_name' => $this->translator->trans('cache.delete_whole_cache', [], 'pages'),
+            'content' => $this->translator->trans('cache.cleared', [], 'pages')
         ]);
     }
 }

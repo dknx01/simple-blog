@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use function Symfony\Component\String\u;
 
 /**
@@ -26,14 +27,16 @@ use function Symfony\Component\String\u;
 class DocumentFolderController extends AbstractController
 {
     private string $dataPath;
+    private TranslatorInterface $translator;
 
     /**
      * DocumentFolderController constructor.
      * @param string $dataPath
      */
-    public function __construct(string $dataPath)
+    public function __construct(string $dataPath, TranslatorInterface $translator)
     {
         $this->dataPath = $dataPath;
+        $this->translator = $translator;
     }
 
     /**
@@ -44,9 +47,7 @@ class DocumentFolderController extends AbstractController
     public function list() :Response
     {
         $content =[];
-        $folders = (new Finder())->in($this->dataPath)->directories()->sortByName();
-
-        foreach ($folders as $folder) {
+        foreach ((new Finder())->in($this->dataPath)->directories()->sortByName() as $folder) {
             $folderData = [
                 'path' => u($folder->getRealPath())->replace($this->dataPath, '')->trimStart('/')->toString(),
                 'name' => u($folder->getRealPath())->replace($this->dataPath, '')->afterLast('/')->toString(),
@@ -106,7 +107,7 @@ class DocumentFolderController extends AbstractController
         return $this->render(
             'documentsFolder/new.html.twig',
             [
-                'name' => 'Dokumentenordner anlegen',
+                'name' => $this->translator->trans('document_folder.create_new_folder', [],'pages'),
                 'errors' => $errors,
                 'newFolder' => $newFolder
             ]
@@ -119,20 +120,20 @@ class DocumentFolderController extends AbstractController
         $newFolder->setFoldername($request->request->get('foldername'));
 
         if ($newFolder->getParent() === '') {
-            $errors[] = 'Ordnername darf nicht leer sein';
+            $errors[] = $this->translator->trans('document_folder.error.empty', [], 'pages');
             return $errors;
         }
 
         $finder = (new Finder())->in($this->dataPath . '/' . $newFolder->getParent());
         if (\count($finder->directories()->name($newFolder->getFoldername())) > 0) {
-            $errors[] = 'Ordner existiert schon';
+            $errors[] = $this->translator->trans('document_folder.error.already_exists', [], 'pages');
             return $errors;
         }
 
         try {
             (new Filesystem())->mkdir($this->dataPath . '/' . $newFolder->getParent() . '/' . $newFolder->getFoldername());
         } catch (IOExceptionInterface $exception) {
-            $errors[] = "An error occurred while creating your directory at ".$exception->getPath();
+            $errors[] = $this->translator->trans('document_folder.error.generic', ['%folder%' => $exception->getPath()], 'pages');
         }
 
         return $errors;
