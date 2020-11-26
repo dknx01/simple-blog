@@ -4,7 +4,7 @@
     {{ 'headline'|trans }}
 {% endblock %}
 {% block card_header %}
-    {{ title }} {% if is_granted('ROLE_ADMIN') %}<a title="{{ 'edit'|trans }}"  href="{{ path('wiki_edit', {path: path|url_encode}) }}"><i class="fas fa-edit"></i></a>{% endif %}
+    {{ title }} {% if is_granted(constant('App\\Security\\Roles::ROLE_ADMIN')) %}<a title="{{ 'edit'|trans }}"  href="{{ path('wiki_edit', {path: path|url_encode}) }}"><i class="fas fa-edit"></i></a>{% endif %}
 {% endblock %}
 {% block card_body %}
 

@@ -150,7 +150,7 @@ class HomeController extends AbstractController
     {
         $content = $this->contentLister->listContent('/Dokumente/' . \urldecode($path));
         return $this->render('home/list.html.twig', [
-            'name' => $this->translator->trans('document.header', ['%path%' => $path], 'pages'),
+            'name' => $this->translator->trans('document.header', ['%path%' => \urldecode($path)], 'pages'),
             'content' => $content
         ]);
     }

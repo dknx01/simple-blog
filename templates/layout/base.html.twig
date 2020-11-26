@@ -19,7 +19,7 @@
 <body class="sb-nav-fixed">
 {% include 'layout/navi_top.html.twig' %}
 <div id="layoutSidenav">
-    {% if is_granted('ROLE_EDITOR') %}
+    {% if is_granted(constant('App\\Security\\Roles::ROLE_EDITOR')) %}
         {% include 'layout/navi_side.html.twig' %}
     {% endif %}
     <div id="layoutSidenav_content">

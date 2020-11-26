@@ -1,0 +1,116 @@
+version: "3"
+
+services:
+    traefik:
+        image: traefik:v1.7
+        env_file:
+            - .env
+        ports:
+            - 80:80
+            - 443:443
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+            - ./.docker/traefik/traefik.toml:/etc/traefik/traefik.toml
+        networks:
+            - proxy
+        labels:
+            - traefik.enable=true
+            - traefik.docker.network=proxy
+            - traefik.frontend.rule=Host:traefik.symfony.local
+            - traefik.port=8080
+
+    nginx:
+        image: nginx:1.17-alpine
+        env_file:
+            - .env
+        volumes:
+            - ./:/var/www
+            - ./.docker/nginx/conf/nginx.conf:/etc/nginx/nginx.conf
+        links:
+            - php
+        networks:
+            - internal
+            - proxy
+        labels:
+            - traefik.docker.network=proxy
+            - traefik.enable=true
+            - traefik.frontend.rule=Host:symfony.local
+            - traefik.port=80
+
+    php:
+        env_file:
+            - .env
+        build:
+            args:
+              USER_ID: 1000
+            context: ./.docker/php
+        volumes:
+            - ./:/var/www
+            - ./.docker/php/conf/cli.ini:/etc/php/7.4/cli/conf.d/zz-symfony.ini
+            - ./.docker/php/conf/fpm.ini:/etc/php/7.4/fpm/conf.d/zz-symfony.ini
+            - ./.docker/php/conf/xdebug.ini:/etc/php/7.4/fpm/conf.d/zz-xdebug.ini
+            - ./.docker/php/conf/opcache.ini:/etc/php/7.4/fpm/conf.d/zz-opcache.ini
+            - ./.docker/php/conf/pool.conf:/etc/php/7.4/fpm/pool.d/www.conf
+        networks:
+            - internal
+        labels:
+            - traefik.enable=false
+
+    db:
+        image: mysql:5.7
+        env_file:
+            - .env
+        volumes:
+            - db_data:/var/lib/mysql
+            - ./.docker/mysql/conf.d:/etc/mysql/conf.d
+        command:
+            - --character-set-server=utf8mb4
+            - --collation-server=utf8mb4_unicode_ci
+            - --skip-character-set-client-handshake
+        networks:
+            - internal
+        labels:
+            - traefik.enable=false
+
+    adminer:
+        image: adminer
+        env_file:
+            - .env
+        networks:
+            - internal
+            - proxy
+        labels:
+            - traefik.docker.network=proxy
+            - traefik.enable=true
+            - traefik.frontend.rule=Host:db.symfony.local
+            - traefik.port=8080
+
+    blackfire:
+        image: blackfire/blackfire
+        env_file:
+            - .env
+        networks:
+            - internal
+        labels:
+            - traefik.enable=false
+
+    mailhog:
+        image: mailhog/mailhog
+        env_file:
+            - .env
+        networks:
+            - internal
+            - proxy
+        labels:
+            - traefik.docker.network=proxy
+            - traefik.enable=true
+            - traefik.frontend.rule=Host:mail.symfony.local
+            - traefik.port=8025
+
+networks:
+    internal:
+    proxy:
+        external: true
+
+volumes:
+    db_data:

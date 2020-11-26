@@ -20,7 +20,7 @@
                     {{ 'memo.document_list'|trans({}, 'menu') }}
                 </a>
                 <div class="sb-sidenav-menu-heading font-weight-bold">{{ 'site_management'|trans({}, 'menu') }}</div>
-                {% if is_granted('ROLE_ADMIN') %}
+                {% if is_granted(constant('App\\Security\\Roles::ROLE_ADMIN')) %}
                     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLayouts"
                        aria-expanded="false" aria-controls="collapseLayouts">
                         <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
@@ -45,7 +45,7 @@
                         <a class="nav-link" href="{{ path('document_folder_list') }}"><div class="sb-nav-link-icon"><i class="fas fa-folder-plus"></i></div>{{ 'documents.new'|trans({}, 'menu') }}</a>
                     </nav>
                 </div>
-                {% if is_granted('ROLE_ADMIN') %}
+                {% if is_granted(constant('App\\Security\\Roles::ROLE_ADMIN')) %}
                     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseFolder"
                        aria-expanded="false" aria-controls="collapseFolder">
                         <div class="sb-nav-link-icon"><i class="fas fa-sync"></i></div>

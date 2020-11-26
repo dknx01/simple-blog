@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
+use App\Security\Roles;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
@@ -167,14 +168,17 @@ class UserController extends AbstractController
         }
 
         $roles = [];
-        if (!$request->request->has('admin') && !$request->request->has('editor')) {
-            $roles[] = 'ROLE_USER';
+        if ($this->isNormalUser($request)) {
+            $roles[] = Roles::ROLE_USER;
         } else {
             if ($request->request->has('admin') && $request->request->get('admin') === '1') {
-                $roles[] = 'ROLE_ADMIN';
+                $roles[] = Roles::ROLE_ADMIN;
             }
             if ($request->request->has('editor') && $request->request->get('editor') === '1') {
-                $roles[] = 'ROLE_EDITOR';
+                $roles[] = Roles::ROLE_EDITOR;
+            }
+            if ($request->request->has('ov') && $request->request->get('ov') === '1') {
+                $roles[] = Roles::ROLE_OV_MEMBER;
             }
         }
 
@@ -185,5 +189,18 @@ class UserController extends AbstractController
         }
 
         return $errors;
+    }
+
+    /**
+     * @param Request $request
+     * @return bool
+     */
+    private function isNormalUser(Request $request): bool
+    {
+        return
+            !$request->request->has('admin')
+            && !$request->request->has('editor')
+            && !$request->request->has('ov')
+            ;
     }
 }

@@ -35,7 +35,7 @@
                 <div class="card-footer text-muted">
                     <h6 class="card-subtitle mb-2 text-muted">{{ 'actions'|trans({}, 'suggestion') }}</h6>
                     <a href="{{ path('suggestion_comment', {'id': suggestion.id}) }}" class="card-link">{{ 'add_comment'|trans({}, 'suggestion') }}</a>
-                    {% if is_granted('ROLE_ADMIN') %}
+                    {% if is_granted(constant('App\\Security\\Roles::ROLE_ADMIN')) %}
                         {% for transition in workflow_transitions(suggestion) %}
                             {% if transition.name == 'consider for discussing' %}
                                 <a class="btn-sm btn-info card-link" href="{{ path('suggestion_transition', {'id':suggestion.id, 'transition':transition.name|url_encode }) }}" role="button">{{ 'transition.discuss'|trans({}, 'suggestion') }}</a>

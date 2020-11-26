@@ -21,7 +21,7 @@
                                         </style>
 
                                         <div class="example-wrapper">
-                                                <embed src="{{ path('file', {path: content.path|url_encode}) }}" type="application/pdf" width="100%" height="1024px" />
+                                                <iframe src="{{ path('file', {path: content.path|url_encode}) }}" width="100%" height="1024px"></iframe>
                                         </div>
                                 {% else %}
                                         <div class="card-header">

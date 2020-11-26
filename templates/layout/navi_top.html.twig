@@ -5,7 +5,7 @@
         <button id="main_menu" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-    {% if is_granted('ROLE_ADMIN') %}
+    {% if is_granted(constant('App\\Security\\Roles::ROLE_ADMIN')) %}
         <button class="btn btn-link btn-sm order-1 order-lg-0" id="sidebarToggle" href="#"><i class="fas fa-bars"></i></button>
     {% endif %}
     <div class="collapse navbar-collapse" style="background-color: #dee2e6 !important;" id="navbarSupportedContent">
@@ -50,7 +50,7 @@
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" id="userDropdown" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-user-secret fa-fw"></i></a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
-                {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                {% if is_granted(constant('App\\Security\\Roles::LOGGED_IN')) %}
                     <a class="dropdown-item disabled">{{ app.user.username }}</a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="{{ path('app_logout') }}">{{ 'logout'|trans({}, 'menu') }}</a>
