@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\ContentLister\ContentSearch;
+use App\Security\File\Sanitizer;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -44,7 +45,8 @@ class SearchController extends AbstractController
      */
     public function searchResult(string $path): Response
     {
-        $path = u(urldecode($path));
+        $path = Sanitizer::securePath(urldecode($path));
+        $path = u($path);
         if ($path->afterLast('.')->toString() !== 'md') {
             return $this->redirectToRoute('file', ['path' => urlencode($path->toString())]);
         }

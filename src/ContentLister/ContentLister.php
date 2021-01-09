@@ -119,7 +119,7 @@ class ContentLister
                 $contentCollection->addFile(
                     DirectoryContent::createFileEntry(
                         $fileName,
-                        u($entry->getPath())->replace($this->dataPath, '')->replace('_', ' ')->replace('-', ' ')->toString()
+                        u($entry->getPath())->replace($this->dataPath, '')->after('/')->replace('_', ' ')->replace('-', ' ')->toString()
                     )
                 );
             }

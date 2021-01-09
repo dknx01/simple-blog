@@ -15,6 +15,7 @@ use App\Form\NewDocumentType;
 use App\MarkdownContent\MarkdownReader;
 use App\Repository\MemoRepository;
 use App\Repository\NewDocumentRepository;
+use App\Security\File\Sanitizer;
 use Psr\Cache\InvalidArgumentException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -166,7 +167,7 @@ class MemoUpload extends AbstractController
         $newDocument = new NewDocument();
 
         if ($request->getMethod() === 'GET') {
-            $path = urldecode($path);
+            $path = Sanitizer::removeDotsAndTilde(urldecode($path));
             $path = (str_starts_with($path, '/') ? $path : '/' . $path );
             $newDocument->setPath('/Dokumente' . $path . '/new_Memo');
         }
@@ -200,15 +201,16 @@ class MemoUpload extends AbstractController
      */
     public function delete(string $path, bool $force = false): Response
     {
+        $path = Sanitizer::removeDotsAndTilde(urldecode($path));
         if ($force === true) {
-            unlink($this->dataPath . '/' . urldecode($path));
+            unlink($this->dataPath . '/' . $path);
             return  $this->redirectToRoute('memo-edit-list');
         }
         return $this->render(
             'memo/delete.html.twig',
             [
                 'name' => $this->translator->trans('memo.delete file', [], 'pages'),
-                'filename' => urldecode($path)
+                'filename' => $path
             ]
         );
     }

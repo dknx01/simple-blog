@@ -10,6 +10,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Notifier\ChatterInterface;
+use Symfony\Component\Notifier\Exception\TransportExceptionInterface;
+use Symfony\Component\Notifier\Message\ChatMessage;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Workflow\Exception\LogicException;
 use Symfony\Component\Workflow\Registry;
@@ -20,10 +23,12 @@ use Symfony\Component\Workflow\Registry;
 class SuggestionController extends AbstractController
 {
     private Registry $workflowRegistry;
+    private ChatterInterface $chatter;
 
-    public function __construct(Registry $workflowRegistry)
+    public function __construct(Registry $workflowRegistry, ChatterInterface $chatter)
     {
         $this->workflowRegistry = $workflowRegistry;
+        $this->chatter = $chatter;
     }
 
     /**
@@ -82,6 +87,8 @@ class SuggestionController extends AbstractController
                 $entityManager = $this->getDoctrine()->getManager();
                 $entityManager->persist($suggestion);
                 $entityManager->flush();
+
+                $this->sendChatterMessageForSuggestion($suggestion);
             } catch (LogicException $exception) {
                 $this->addFlash('error', $exception->getMessage());
                 return $this->render('suggestion/new.html.twig', [
@@ -207,5 +214,17 @@ class SuggestionController extends AbstractController
             $request->request->get('comment')
         );
         return $suggestion->getComments() === '' ? $comment : $suggestion->getComments() . '<hr>' . $comment;
+    }
+
+    /**
+     * @param Suggestion $suggestion
+     * @throws TransportExceptionInterface
+     */
+    private function sendChatterMessageForSuggestion(Suggestion $suggestion): void
+    {
+        $message = (new ChatMessage('Neuer Vorschlag/Idee'))
+            ->subject($this->renderView('suggestion/telegramm_message.html.twig', ['suggestion' => $suggestion]))
+            ->transport('telegram');
+        $this->chatter->send($message);
     }
 }

@@ -8,6 +8,7 @@
 namespace App\Controller;
 
 use App\Entity\NewFolder;
+use App\Security\File\Sanitizer;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
@@ -102,7 +103,8 @@ class DocumentFolderController extends AbstractController
                 return $this->redirectToRoute('document_folder_list');
             }
         } else {
-            $newFolder->setParent(urldecode($path));
+            $path = Sanitizer::removeDotsAndTilde(urldecode($path));
+            $newFolder->setParent($path);
         }
         return $this->render(
             'documentsFolder/new.html.twig',

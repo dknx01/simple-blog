@@ -31,6 +31,7 @@
         "symfony/security-bundle": "5.1.*",
         "symfony/serializer-pack": "*",
         "symfony/string": "5.1.*",
+        "symfony/telegram-notifier": "5.1.*",
         "symfony/translation": "5.1.*",
         "symfony/twig-pack": "*",
         "symfony/uid": "5.1.*",

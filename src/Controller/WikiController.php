@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Wiki;
 use App\Form\WikiType;
 use App\Repository\WikiRepository;
+use App\Security\File\Sanitizer;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -62,7 +63,7 @@ class WikiController extends AbstractController
      */
     public function show(string $path, WikiRepository $wikiRepository): Response
     {
-        $path = urldecode($path);
+        $path = Sanitizer::removeDotsAndTilde(urldecode($path));
         return $this->render('wiki/show.html.twig', [
             'content' => $wikiRepository->findOneByPath($path),
             'title' => u($path)->ensureStart('/')->afterLast('/')->toString(),
@@ -80,7 +81,7 @@ class WikiController extends AbstractController
      */
     public function edit(Request $request, string $path, WikiRepository $wikiRepository): Response
     {
-        $path = urldecode($path);
+        $path = Sanitizer::removeDotsAndTilde(urldecode($path));
         $wiki = new Wiki();
         if ($request->getMethod() === Request::METHOD_GET) {
             $wiki->setName($path);

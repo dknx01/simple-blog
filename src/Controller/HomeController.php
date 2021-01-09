@@ -3,14 +3,12 @@
 namespace App\Controller;
 
 use App\ContentLister\ContentLister;
-use App\ContentLister\ContentSearch;
+use App\Security\File\Sanitizer;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 use Knp\Snappy\Pdf;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Annotation\Route;
@@ -72,7 +70,8 @@ class HomeController extends AbstractController
      */
     public function memo(string $path): Response
     {
-        $content = $this->contentLister->getContentForFile(urldecode($path));
+        $path = Sanitizer::securePath(urldecode($path));
+        $content = $this->contentLister->getContentForFile($path);
 
         return $this->render('home/memo.html.twig', [
             'controller_name' => $this->translator->trans('memo.headline', [], 'pages'),
@@ -120,8 +119,10 @@ class HomeController extends AbstractController
      */
     public function fileDownload(string $path): Response
     {
-        $file = new File($this->dataPath . urldecode($path));
-        $fileName = urldecode(u($path)->afterLast('/')->toString());
+        $path = urldecode($path);
+        $path = Sanitizer::securePath($path);
+        $file = new File($this->dataPath . $path);
+        $fileName = u($path)->afterLast('/')->toString();
         return $this->file($file, $fileName, ResponseHeaderBag::DISPOSITION_INLINE);
     }
 
@@ -131,8 +132,9 @@ class HomeController extends AbstractController
      * @param string $path
      * @return Response
      */
-    public function listStammtische(string $path): Response
+    public function     listStammtische(string $path): Response
     {
+        $path = Sanitizer::securePath(urldecode($path));
         $content = $this->contentLister->listContent('/Stammtische/' . $path);
         return $this->render('home/list.html.twig', [
             'name' => $this->translator->trans('stammtisch', ['%path%' => $path], 'pages'),
@@ -148,9 +150,10 @@ class HomeController extends AbstractController
      */
     public function listDocuments(string $path = ''): Response
     {
-        $content = $this->contentLister->listContent('/Dokumente/' . \urldecode($path));
+        $path = Sanitizer::securePath(urldecode($path));
+        $content = $this->contentLister->listContent('/Dokumente/' . $path);
         return $this->render('home/list.html.twig', [
-            'name' => $this->translator->trans('document.header', ['%path%' => \urldecode($path)], 'pages'),
+            'name' => $this->translator->trans('document.header', ['%path%' => $path], 'pages'),
             'content' => $content
         ]);
     }
@@ -175,7 +178,8 @@ class HomeController extends AbstractController
      */
     public function toPdf(string $path): Response
     {
-        $content = $this->contentLister->getContentForFile(urldecode($path) . '.md');
+        $path = Sanitizer::securePath(urldecode($path));
+        $content = $this->contentLister->getContentForFile($path . '.md');
         $fileName = u(urldecode($path))->afterLast('/')->ensureEnd('.pdf')->toString();
         return new PdfResponse(
             $this->snappy->getOutputFromHtml(
@@ -183,7 +187,7 @@ class HomeController extends AbstractController
                     'home/simple.html.twig',
                     [
                         'content' => $content->getContent(),
-                        'title' => urldecode($path)]
+                        'title' => $path]
                 )
             ),
             $fileName
