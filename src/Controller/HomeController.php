@@ -132,7 +132,7 @@ class HomeController extends AbstractController
      * @param string $path
      * @return Response
      */
-    public function     listStammtische(string $path): Response
+    public function listStammtische(string $path): Response
     {
         $path = Sanitizer::securePath(urldecode($path));
         $content = $this->contentLister->listContent('/Stammtische/' . $path);

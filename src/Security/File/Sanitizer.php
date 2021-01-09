@@ -35,6 +35,9 @@ class Sanitizer
      */
     private static function ensureAllowedDirectories(string $path): string
     {
+        if (!preg_match('@^/.*@', $path)) {
+            return  $path;
+        }
         $pattern = '@^(.*)(?:';
         $pattern .= implode('|', self::ALLOWED_PATHS);
         $pattern .= ')/.*$@';

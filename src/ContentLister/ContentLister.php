@@ -76,6 +76,7 @@ class ContentLister
     public function getContentForFile(string $path): MemoContent
     {
         $path = u($path);
+        $path = $path->ensureStart('/');
 
         if ($path->endsWith('.pdf')) {
             $type = MemoContent::PDF;
