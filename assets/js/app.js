@@ -10,6 +10,7 @@ import '../css/app.scss';
 
 // Need jQuery? Install it with "yarn add jquery", then uncomment to import it.
 import $ from 'jquery';
+import bsCustomFileInput from "bs-custom-file-input";
 
 import mermaid from 'mermaid';
 mermaid.initialize({startOnLoad:true});
@@ -25,3 +26,6 @@ $("#sidebarToggle").on("click", function(e) {
 $(document).ready(function() {
     $('[data-toggle="popover"]').popover();
 });
+$(document).ready(function () {
+    bsCustomFileInput.init()
+})
