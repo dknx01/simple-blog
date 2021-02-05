@@ -6,6 +6,7 @@ use App\Entity\Suggestion;
 use App\Form\SuggestionType;
 use App\MarkdownContent\MarkdownReader;
 use App\Repository\SuggestionRepository;
+use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,11 +25,13 @@ class SuggestionController extends AbstractController
 {
     private Registry $workflowRegistry;
     private ChatterInterface $chatter;
+    private LoggerInterface $logger;
 
-    public function __construct(Registry $workflowRegistry, ChatterInterface $chatter)
+    public function __construct(Registry $workflowRegistry, ChatterInterface $chatter, LoggerInterface $logger)
     {
         $this->workflowRegistry = $workflowRegistry;
         $this->chatter = $chatter;
+        $this->logger = $logger;
     }
 
     /**
@@ -222,9 +225,13 @@ class SuggestionController extends AbstractController
      */
     private function sendChatterMessageForSuggestion(Suggestion $suggestion): void
     {
-        $message = (new ChatMessage('Neuer Vorschlag/Idee'))
-            ->subject($this->renderView('suggestion/telegramm_message.html.twig', ['suggestion' => $suggestion]))
-            ->transport('telegram');
-        $this->chatter->send($message);
+        try {
+            $message = (new ChatMessage('Neuer Vorschlag/Idee'))
+                ->subject($this->renderView('suggestion/telegramm_message.html.twig', ['suggestion' => $suggestion]))
+                ->transport('telegram');
+            $this->chatter->send($message);
+        } catch (\Exception $exception) {
+            $this->logger->error($exception->getMessage());
+        }
     }
 }

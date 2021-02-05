@@ -25,7 +25,7 @@
                                         </div>
                                 {% else %}
                                         <div class="card-header">
-                                                {{ content.path }} <a title="{{ 'download_as_pdf'|trans }}" target="_blank" href="{{ path('pdf', {path: content.path|url_encode}) }}"><i class="fas fa-download"></i></a>
+                                                {{ content.path }} <a title="{{ 'download_as_pdf'|trans }}" target="_blank" href="{{ path('pdf', {path: content.path|url_encode}) }}"><i class="fas fa-download"></i></a><a title="{{ 'edit'|trans }}" href="{{ path('memo-edit', {path: (content.path ~ '.md')|url_encode}) }}"><i class="fas fa-edit"></i></a>
                                         </div>
                                         <div class="card-body">
                                                 {{ content.content|raw }}
