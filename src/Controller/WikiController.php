@@ -63,7 +63,7 @@ class WikiController extends AbstractController
      */
     public function show(string $path, WikiRepository $wikiRepository): Response
     {
-        $path = Sanitizer::removeDotsAndTilde(urldecode($path));
+        $path = urldecode($path);
         return $this->render('wiki/show.html.twig', [
             'content' => $wikiRepository->findOneByPath($path),
             'title' => u($path)->ensureStart('/')->afterLast('/')->toString(),

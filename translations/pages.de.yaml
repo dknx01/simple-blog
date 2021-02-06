@@ -56,4 +56,4 @@ cache:
   cleared: 'Cache geleert'
 stammtisch: 'Stammtische %path%'
 document:
-  header: 'Dokumente/%path%'
+  header: '%path%'

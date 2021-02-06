@@ -3,46 +3,68 @@
 namespace App\Repository;
 
 use App\Entity\Memo;
-use App\Entity\MemoEdit;
-use Twig\Environment;
-use function Symfony\Component\String\u;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Persistence\ManagerRegistry;
 
-class MemoRepository
+/**
+ * @method Memo|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Memo|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Memo[]    findAll()
+ * @method Memo[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method
+ */
+class MemoRepository extends ServiceEntityRepository
 {
-    private Environment $twig;
-    private string $path;
-
-    /**
-     * MemoRepository constructor.
-     * @param Environment $twig
-     * @param string $path
-     */
-    public function __construct(Environment $twig, string $path)
+    public function __construct(ManagerRegistry $registry)
     {
-        $this->twig = $twig;
-        $this->path = $path;
+        parent::__construct($registry, Memo::class);
+    }
+
+    public function findByLocation(string $path): array
+    {
+        $qb = $this->createQueryBuilder('m');
+        $qb->select('m.id, m.location, m.title, m.fileName, m.onDisk, m.extension');
+        $qb->where('m.location LIKE :pathFolders')
+            ->orWhere('m.location = :pathFiles')
+            ->orderBy('m.location', 'ASC')
+            ->setParameter('pathFolders', $path . '/%')
+            ->setParameter('pathFiles', $path );
+        return $qb->getQuery()->getResult();
     }
 
     public function save(Memo $memo): void
     {
-        $filepath = sprintf(
-            '%s/Stammtische/%s/%s_%s.md',
-            $this->path,
-            $memo->getType(),
-            u($memo->getTitle())->replace(' ', '_')->toString(),
-            $memo->getDate()->format('d.m.Y')
-        );
-        file_put_contents(
-            $filepath,
-            $this->twig->render('memo/memo-template.html.twig', ['memo' => $memo])
-        );
+        $this->_em->persist($memo);
+        $this->_em->flush();
     }
 
-    public function updateMemo(MemoEdit $memoEdit): void
+    public function findMemo(string $path)
     {
-        file_put_contents(
-            $this->path . $memoEdit->getPath(),
-            $this->twig->render('memo/link-collection-template.html.twig', ['memo' => $memoEdit])
-        );
+        $query = 'SELECT * FROM memo WHERE location || "/" || file_name = :path  LIMIT 0,1';
+        $result = $this->_em->getConnection()->executeQuery($query, [$path]);
+
+        return $result->fetchAssociative();
+    }
+
+    public function findAllWiki()
+    {
+        $qb = $this->createQueryBuilder('memo');
+        $qb->select('memo.title, memo.fileName');
+        $qb->where('memo.location = :location')
+            ->orderBy('memo.title', 'ASC')
+            ->setParameter('location', '/Wiki');
+        return $qb->getQuery()->getResult();
+    }
+
+    public function findOneWiki(string $path)
+    {
+        $qb = $this->createQueryBuilder('memo');
+        $qb->where('memo.location=:wiki')
+            ->andWhere('memo.fileName=:entry')
+            ->setParameter('wiki', '/Wiki')
+            ->setParameter('entry', $path);
+
+        return $qb->getQuery()->getSingleResult();
     }
 }

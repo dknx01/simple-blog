@@ -2,7 +2,10 @@
 
 namespace App\Controller;
 
+use App\ContentLister\ContentFolderLister;
 use App\ContentLister\ContentLister;
+use App\Entity\Memo;
+use App\Repository\MemoRepository;
 use App\Security\File\Sanitizer;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 use Knp\Snappy\Pdf;
@@ -26,6 +29,8 @@ class HomeController extends AbstractController
     private Pdf $snappy;
     private string $newbeePath;
     private TranslatorInterface $translator;
+    private MemoRepository $memoRepo;
+    private ContentFolderLister $contentFolderLister;
 
     /**
      * HomeController constructor.
@@ -35,6 +40,7 @@ class HomeController extends AbstractController
      * @param Pdf $pdf
      * @param string $newbeePath
      * @param TranslatorInterface $translator
+     * @param MemoRepository $memoRepository
      */
     public function __construct(
         string $dataPath,
@@ -42,7 +48,9 @@ class HomeController extends AbstractController
         string $linkCollectionPath,
         Pdf $pdf,
         string $newbeePath,
-        TranslatorInterface $translator
+        TranslatorInterface $translator,
+        MemoRepository $memoRepository,
+        ContentFolderLister $contentFolderLister
     ) {
         $this->dataPath = $dataPath;
         $this->contentLister = $contentLister;
@@ -50,6 +58,8 @@ class HomeController extends AbstractController
         $this->snappy = $pdf;
         $this->newbeePath = $newbeePath;
         $this->translator = $translator;
+        $this->memoRepo = $memoRepository;
+        $this->contentFolderLister = $contentFolderLister;
     }
 
     /**
@@ -70,8 +80,7 @@ class HomeController extends AbstractController
      */
     public function memo(string $path): Response
     {
-        $path = Sanitizer::securePath(urldecode($path));
-        $content = $this->contentLister->getContentForFile($path);
+        $content = $this->contentFolderLister->getContent(urldecode($path));
 
         return $this->render('home/memo.html.twig', [
             'controller_name' => $this->translator->trans('memo.headline', [], 'pages'),
@@ -86,7 +95,7 @@ class HomeController extends AbstractController
      */
     public function linkCollection(): Response
     {
-        $content = $this->contentLister->getContentForFile($this->linkCollectionPath);
+        $content = $this->contentFolderLister->getContent($this->linkCollectionPath);
 
         return $this->render('home/link-collection.html.twig', [
             'controller_name' => $this->translator->trans('linklist.name', [], 'pages'),
@@ -102,7 +111,7 @@ class HomeController extends AbstractController
      */
     public function newbee(): Response
     {
-        $content = $this->contentLister->getContentForFile($this->newbeePath);
+        $content = $this->contentFolderLister->getContent($this->newbeePath);
 
         return $this->render('home/link-collection.html.twig', [
             'controller_name' => $this->translator->trans('newbee', [], 'pages'),
@@ -120,9 +129,9 @@ class HomeController extends AbstractController
     public function fileDownload(string $path): Response
     {
         $path = urldecode($path);
-        $path = Sanitizer::securePath($path);
-        $file = new File($this->dataPath . $path);
-        $fileName = u($path)->afterLast('/')->toString();
+        $memo = $this->memoRepo->findMemo($path);
+        $file = new File($this->dataPath . '/' . $memo['uuid'] . $memo['extension']);
+        $fileName = $memo['file_name'];
         return $this->file($file, $fileName, ResponseHeaderBag::DISPOSITION_INLINE);
     }
 
@@ -134,8 +143,8 @@ class HomeController extends AbstractController
      */
     public function listStammtische(string $path): Response
     {
-        $path = Sanitizer::securePath(urldecode($path));
-        $content = $this->contentLister->listContent('/Stammtische/' . $path);
+        $path = urldecode($path);
+        $content = $this->contentFolderLister->getFolder('/Stammtische/' . $path);
         return $this->render('home/list.html.twig', [
             'name' => $this->translator->trans('stammtisch', ['%path%' => $path], 'pages'),
             'content' => $content
@@ -150,10 +159,12 @@ class HomeController extends AbstractController
      */
     public function listDocuments(string $path = ''): Response
     {
-        $path = Sanitizer::securePath(urldecode($path));
-        $content = $this->contentLister->listContent('/Dokumente/' . $path);
+        $path = urldecode($path);
+        $location =  $path === '' ? '/Dokumente' : $path;
+        $content = $this->contentFolderLister->getFolder($location);
+        $translationsPath = strpos($path, '/') === 0 ? substr($path, 1) : $path;
         return $this->render('home/list.html.twig', [
-            'name' => $this->translator->trans('document.header', ['%path%' => $path], 'pages'),
+            'name' => $this->translator->trans('document.header', ['%path%' => $translationsPath], 'pages'),
             'content' => $content
         ]);
     }
@@ -176,21 +187,22 @@ class HomeController extends AbstractController
      * @param string $path
      * @return Response
      */
-    public function toPdf(string $path): Response
-    {
-        $path = Sanitizer::securePath(urldecode($path));
-        $content = $this->contentLister->getContentForFile($path . '.md');
-        $fileName = u(urldecode($path))->afterLast('/')->ensureEnd('.pdf')->toString();
-        return new PdfResponse(
-            $this->snappy->getOutputFromHtml(
-                $this->renderView(
-                    'home/simple.html.twig',
-                    [
-                        'content' => $content->getContent(),
-                        'title' => $path]
-                )
-            ),
-            $fileName
-        );
-    }
+//    public function toPdf(string $path): Response
+//    {
+//        $path = urldecode($path);
+//        $content = $this->contentFolderLister->getContent($path);
+//        $fileName = u($content['file_name'])->replace('.md', '.pdf')->toString();
+//        return new PdfResponse(
+//            $this->snappy->getOutputFromHtml(
+//                $this->renderView(
+//                    'home/simple.html.twig',
+//                    [
+//                        'content' => $content['content'],
+//                        'title' => $content['title']
+//                    ]
+//                )
+//            ),
+//            $fileName
+//        );
+//    }
 }

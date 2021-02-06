@@ -10,10 +10,10 @@
         {% for key, entries in wikis %}
         <ul class="list-group">
                 <li class="list-group-item active" data-toggle="collapse" href="#collapse{{ key }}" role="button" aria-expanded="true" aria-controls="collapse{{ key }}">{{ key }}</li>
-                {% for name, entry in entries %}
+                {% for entry in entries %}
 
-                <div class="collapse show" id="collapse{{ name }}">
-                <li class="list-group-item"><a href="{{ path('wiki_show', {'path': entry|url_encode}) }}">{{ name }}</li>
+                <div class="collapse show" id="collapse{{ entry.title }}">
+                <li class="list-group-item"><a href="{{ path('wiki_show', {'path': entry.fileName|url_encode}) }}">{{ entry.title }}</li>
                 </div>
                 {% endfor %}
         </ul>

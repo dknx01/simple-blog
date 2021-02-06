@@ -44,6 +44,8 @@ services:
             args:
               USER_ID: 1000
             context: ./.docker/php
+        environment:
+            PHP_IDE_CONFIG: 'serverName=_'
         volumes:
             - ./:/var/www
             - ./.docker/php/conf/cli.ini:/etc/php/7.4/cli/conf.d/zz-symfony.ini

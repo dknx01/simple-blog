@@ -17,20 +17,20 @@ class WikiRepository
     private MarkdownReader $markdownReader;
     private CacheInterface $cache;
     private Environment $twig;
-    private Filesystem $filesystem;
+    private MemoRepository $memoRepo;
 
     public function __construct(
         CacheInterface $cache,
         MarkdownReader $markdownReader,
         string $path,
         Environment $twig,
-        Filesystem $filesystem
+        MemoRepository $memoRepository
     ) {
         $this->cache = $cache;
         $this->markdownReader = $markdownReader;
         $this->path = $path . '/Wiki/';
         $this->twig = $twig;
-        $this->filesystem = $filesystem;
+        $this->memoRepo = $memoRepository;
     }
 
     public function findAll(): array
@@ -57,24 +57,23 @@ class WikiRepository
     private function getAllEntries(): \Closure
     {
         return function (ItemInterface $item) {
-            $content = [];
-            foreach ((new Finder())->in($this->path)->files()->name('*.md')->sort($this->sort()) as $file) {
-                $entry = u($file->getBasename())->beforeLast('.');
-                $fileName = u($file->getPathname())->replace($this->path, '')->beforeLast('.')->toString();
-                $content[$entry->slice(0,1)->upper()->toString()][$entry->toString()] = $fileName;
+            $item->expiresAfter(10);
+            $entries = $this->memoRepo->findAllWiki();
+            $result = [];
+            foreach ($entries as $entry) {
+                $group = strtoupper(substr($entry['title'], 0, 1));
+                $result[$group][] = $entry;
             }
-            array_walk($content, static function ($item, $key) use (&$content) {
-                natsort($item);
-                $content[$key] = $item;
-            });
-            return $content;
+            return $result;
         };
     }
 
     private function getEntry(string $path): \Closure
     {
         return function (ItemInterface $item) use ($path) {
-            return $this->markdownReader->getContent($this->path . $path . '.md');
+            $item->expiresAfter(10);
+            $memo = $this->memoRepo->findOneWiki($path);
+            return $this->markdownReader->parseString($memo->getContent());
         };
     }
 
