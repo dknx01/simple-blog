@@ -10,6 +10,7 @@ namespace App\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\File;
@@ -29,25 +30,19 @@ class MemoPdf extends AbstractType
             'constraints' => [
                 new File([
                     'maxSize' => '10240k',
-                    'mimeTypes' => [
-                        'application/pdf',
-                        'application/x-pdf',
-                        'text/markdown',
-                    ],
-                    'mimeTypesMessage' => 'Please upload a valid PDF or MD document',
+//                    'mimeTypes' => [
+//                        'application/pdf',
+//                        'application/x-pdf',
+//                        'text/markdown',
+//                    ],
+                    'mimeTypesMessage' => 'max. Upload 10MB',
                 ])
             ],
         ])
-        ->add('type', ChoiceType::class, [
-            'label' => 'Art des Memos',
+        ->add('type', TextType::class, [
+            'label' => 'Pfad des Memos',
             'mapped' => false,
             'required' => true,
-            'choices' => [
-                'LV Stammtisch' => 'Stammtische/LV',
-                'OV TK Stammtisch' => 'Stammtische/OV TK',
-                'Kaderschulungsunterlagen' => 'Dokumente/Kaderschulungsunterlagen',
-                'Plakate' => 'Dokumente/Plakate',
-            ]
         ]);
     }
 

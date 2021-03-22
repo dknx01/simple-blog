@@ -1,0 +1,47 @@
+{% extends 'layout/conatiner_fluid.html.twig' %}
+
+{% block title %}{{ 'memo.upload'|trans({}, 'pages') }}{% endblock %}
+{% block content_header %}{{ 'memo.upload'|trans({}, 'pages') }}{% endblock %}
+
+{% block card_body %}
+    {{ include('memo/_form.html.twig') }}
+    {% set counter = 0 %}
+        <div class="tree ">
+            <ul>
+                <li><span><a style="color:#000; text-decoration:none;" data-toggle="collapse" href="#Dokumente" aria-expanded="true" aria-controls="Dokumente"><i class="collapsed"><i class="fas fa-folder"></i></i>
+                <i class="expanded"><i class="far fa-folder-open"></i></i> {{ 'document_folder.documents'|trans({}, 'pages') }}</a></span>
+                    <div id="Dokumente" class="collapse show">
+                        <ul>
+                            <li><span><i class="fas fa-folder-plus"></i> {{ 'document_folder.new_folder'|trans({}, 'pages') }}</span>
+                                {% for key, folder  in folders %}
+                                    {{ _self.subFolders(key, folder, loop.index, ['/', key]|join) }}
+                                {% endfor %}
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </div>
+{% endblock %}
+
+{% macro subFolders(key, currentFolder, counter, path) %}
+    <li><span>
+        <a style="color:#000; text-decoration:none;" data-path="{{ path }}" data-toggle="collapse" href="#folder_{{ counter }}" aria-expanded="false" aria-controls="folder_{{ counter }}"><i class="collapsed"><i class="fas fa-folder"></i></i>
+        <i class="expanded"><i class="far fa-folder-open"></i></i>{{ key }}</a>
+        </span>
+        <ul>
+            <div id="folder_{{ counter }}" class="collapse">
+{#                <li><span><i class="fas fa-folder-plus"></i><a#}
+{#                                href="{{ path('document_folder_new', {path: currentFolder.path|url_encode}) }}"> {{ 'document_folder.new_folder'|trans({}, 'pages') }}</a></span>#}
+{#                </li><li><span><i class="fas fa-file-medical"></i><a#}
+{#                                href="{{ path('new-document', {path: currentFolder.path|url_encode}) }}"> {{ 'document_folder.new_document'|trans({}, 'pages') }}</a></span>#}
+{#                </li>#}
+                {% if currentFolder is iterable %}
+                    {% for subKey, subfolder  in currentFolder %}
+                        {% set subCounter = [counter, '_', loop.index]|join %}
+                        {{ _self.subFolders(subKey, subfolder, subCounter, [path, '/', subKey]|join) }}
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </ul>
+    </li>
+{% endmacro %}

@@ -7,13 +7,10 @@ use App\Repository\MemoRepository;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
-use Symfony\Component\Process\Exception\ProcessFailedException;
-use Symfony\Component\Process\Process;
 use function Symfony\Component\String\u;
 
 class ImportFilesCommand extends Command
@@ -46,18 +43,32 @@ class ImportFilesCommand extends Command
 
         $finder = new Finder();
         $finder->in($input->getArgument('path'));
-        $progressbAr = $io->createProgressBar();
+        $progressBar = $io->createProgressBar();
 
         foreach ($finder->files() as $file) {
             if ($file->getExtension() !== 'ptxt') {
                 $memo = new Memo();
                 $title = substr($file->getFilename(), 0, -(strlen($file->getExtension()) + 1));
                 $title = str_replace(['-', '_'], ' ', $title);
-                $memo->setLocation(substr($file->getPath(), strlen($this->basePath)))
+                $location = substr($file->getPath(), strlen($input->getArgument('path')) -1);
+                $type = '';
+                if (strpos($location, '/Stammtische') === 0) {
+                    $type = u($location)->afterLast('/')->toString();
+                }
+                if ($location === '/Wiki') {
+                    $type = 'Wiki';
+                }
+                if (strpos($location, '/Dokumente') === 0) {
+                    $type = 'Dok';
+                }
+                if (strpos($location, '/Anderes') === 0) {
+                    $type = 'Anderes';
+                }
+                $memo->setLocation($location)
                     ->setExtension($file->getExtension())
                     ->setOnDisk($file->getExtension() !== 'md')
                     ->setTitle($title)
-                    ->setType('LV')
+                    ->setType($type)
                     ->setFileName($file->getFilename())
                 ;
                 if (!$memo->getOnDisk()) {
@@ -70,16 +81,18 @@ class ImportFilesCommand extends Command
                 }
                 $this->memoRepo->save($memo);
                 if ($memo->getOnDisk()) {
-                    $this->fs->copy($file->getPathname(), $this->basePath . '/' . $memo->getUuid() . $memo->getExtension());
+                    $this->fs->copy(
+                        $file->getPathname(),
+                        $this->basePath . '/' . $memo->getUuid() . '.' . $memo->getExtension());
                 }
-                $progressbAr->advance();
-                $progressbAr->display();
+                $progressBar->advance();
+                $progressBar->display();
             }
         }
-        $progressbAr->finish();
-        $progressbAr->display();
+        $progressBar->finish();
+        $progressBar->display();
 
-
+        $io->newLine();
         return Command::SUCCESS;
     }
 }

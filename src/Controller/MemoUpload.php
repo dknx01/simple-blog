@@ -7,6 +7,8 @@
 
 namespace App\Controller;
 
+use App\ContentLister\ContentFolderLister;
+use App\Entity\Memo;
 use App\Entity\MemoEdit;
 use App\Entity\NewDocument;
 use App\Form\MemoEditType;
@@ -39,31 +41,34 @@ class MemoUpload extends AbstractController
 {
     private string $dataPath;
     private TranslatorInterface $translator;
+    private ContentFolderLister $contentFolderLister;
 
     /**
      * @param string $dataPath
      * @param TranslatorInterface $translator
      */
-    public function __construct(string $dataPath, TranslatorInterface $translator)
+    public function __construct(string $dataPath, TranslatorInterface $translator, ContentFolderLister $contentFolderLister)
     {
         $this->dataPath = $dataPath;
         $this->translator = $translator;
+        $this->contentFolderLister = $contentFolderLister;
     }
 
     /**
      * @Route("/upload", name="memo_upload")
      * @IsGranted("ROLE_EDITOR")
      * @param Request $request
-     * @param SluggerInterface $slugger
+     * @param MemoRepository $memoRepository
      * @return Response
      */
-    public function upload(Request $request, SluggerInterface $slugger): Response
+    public function upload(Request $request, MemoRepository $memoRepository): Response
     {
         $pdf = new MemoPdf();
         $form = $this->createForm(MemoPdf::class, $pdf);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $memo = new Memo();
             /** @var UploadedFile $pdfFile */
             $pdfFile = $form->get('pdf')->getData();
 
@@ -71,25 +76,41 @@ class MemoUpload extends AbstractController
             // so the PDF file must be processed only when a file is uploaded
             if ($pdfFile) {
                 $originalFilename = pathinfo($pdfFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $memo->setFileName($originalFilename . '.' . $pdfFile->getClientOriginalExtension())
+                    ->setLocation($form->get('type')->getData())
+                    ->setExtension($pdfFile->getClientOriginalExtension())
+                    ->setTitle($originalFilename)
+                    ->setOnDisk(false)
+                    ->setType(u($form->get('type')->getData())->afterLast('/')->toString());
                 // this is needed to safely include the file name as part of the URL
-                $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename . '.' . $pdfFile->guessExtension();
+                //$safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $memo->getUuid() . '.' . $pdfFile->getClientOriginalExtension();
 
                 // Move the file to the directory where files are stored
                 try {
-                    $storagePath = $this->dataPath . '/' . $form->get('type')->getData();
-                    $pdfFile->move(
-                        $storagePath,
-                        $newFilename
-                    );
-                    $this->extractData($storagePath . '/' . $newFilename);
+                     if ($memo->getExtension() !== 'md') {
+                         $memo->setOnDisk(true);
+                         $pdfFile->move(
+                             $this->dataPath,
+                             $newFilename
+                         );
+                         if ($memo->getExtension() === 'pdf') {
+                             $this->extractData($this->dataPath . '/' . $newFilename);
+                             $memo->setContent(file_get_contents($this->dataPath . '/' . $memo->getUuid() . '.ptxt'));
+                             unlink($this->dataPath . '/' . $memo->getUuid() . '.ptxt');
+                         }
+                     } else {
+                         $memo->setContent($pdfFile->getContent());
+                     }
+                     $memoRepository->save($memo);
                 } catch (FileException $e) {
                 }
             }
         }
-        return $this->render('memo/upload.html.twig', [
+        return $this->render('memo2/upload.html.twig', [
             'name' => $this->translator->trans('memo.uploads', [], 'pages'),
             'form' => $form->createView(),
+            'folders' => $this->contentFolderLister->getAllFolders()
         ]);
     }
 

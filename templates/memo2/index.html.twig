@@ -1,0 +1,50 @@
+{% extends 'layout/conatiner_fluid.html.twig' %}
+{% block title %}{{ 'memo.files.title'|trans({}, 'pages') }}{% endblock %}
+
+{% block body %}
+    <h1>Memo index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Content</th>
+                <th>Date</th>
+                <th>Location</th>
+                <th>Type</th>
+                <th>FileName</th>
+                <th>Extension</th>
+                <th>OnDisk</th>
+                <th>Uuid</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for memo in memos %}
+            <tr>
+                <td>{{ memo.id }}</td>
+                <td>{{ memo.title }}</td>
+                <td>{{ memo.content }}</td>
+                <td>{{ memo.date ? memo.date|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ memo.location }}</td>
+                <td>{{ memo.type }}</td>
+                <td>{{ memo.fileName }}</td>
+                <td>{{ memo.extension }}</td>
+                <td>{{ memo.onDisk ? 'Yes' : 'No' }}</td>
+                <td>{{ memo.uuid }}</td>
+                <td>
+                    <a href="{{ path('memo_show', {'id': memo.id}) }}">show</a>
+                    <a href="{{ path('memo_edit', {'id': memo.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="11">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('memo_new') }}">Create new</a>
+{% endblock %}

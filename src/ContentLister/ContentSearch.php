@@ -8,6 +8,7 @@
 namespace App\ContentLister;
 
 use App\Entity\SearchResult;
+use App\Repository\MemoRepository;
 use Symfony\Component\Cache\CacheItem;
 use Symfony\Component\Finder\Finder;
 use Symfony\Contracts\Cache\CacheInterface;
@@ -15,85 +16,57 @@ use function Symfony\Component\String\u;
 
 class ContentSearch
 {
-    private const AllowedFiles = [
-        '*.md',
-        '*.pdf',
-        '*.docx',
-        '*.TTF',
-        '*.svg',
-        '*.xcf',
-    ];
-    private string $dataPath;
+    private MemoRepository $memoRepository;
     private CacheInterface $cache;
 
     /**
      * ContentLister constructor.
-     * @param string $dataPath
+     * @param MemoRepository $memoRepository
      * @param CacheInterface $cache
      */
-    public function __construct(string $dataPath, CacheInterface $cache)
+    public function __construct(MemoRepository $memoRepository, CacheInterface $cache)
     {
-        $this->dataPath = $dataPath;
+        $this->memoRepository = $memoRepository;
         $this->cache = $cache;
-    }
-
-    public function listContent(string $content): array
-    {
-        return $this->cache->get('searchDir_' . \md5($content), $this->readDirectory($content));
     }
 
     public function findContent(string $content): array
     {
-        return $this->cache->get('searchFiles_' . \md5($content), $this->readFiles($content));
+        return $this->cache->get('search_' . \md5($content), $this->findEntries($content));
+    }
+
+    private function findEntries(string $content): \Closure
+    {
+        return function (CacheItem $item) use ($content) {
+            $item->expiresAfter(10);
+            $contentCollection = [];
+            $contentCollection = $this->addResults($this->memoRepository->findFolderName($content), $contentCollection, 'folder');
+            $contentCollection = $this->addResults($this->memoRepository->findFileName($content), $contentCollection, 'files');
+            $contentCollection = $this->addResults($this->memoRepository->findContent($content), $contentCollection, 'content');
+
+            return $contentCollection;
+        };
     }
 
     /**
-     * @param string $content
-     * @return \Closure
+     * @param array $result
+     * @param array $contentCollection
+     * @param string $section
+     * @return array
      */
-    private function readDirectory(string $content): \Closure
+    private function addResults(array $result, array $contentCollection, string $section): array
     {
-        return function (CacheItem $item) use ($content) {
-            $contentCollection = [];
-
-            $fileNames = [];
-            foreach (self::AllowedFiles as $allowedFile) {
-                $fileNames[] = '~.*' . $content . '.' . $allowedFile . '~i';
-            }
-            foreach ((new Finder())->in($this->dataPath)->files()->name($fileNames) as $file) {
-                $contentCollection[] = new SearchResult(
-                    $file->getBasename(),
-                    $file->getFilename(),
-                    u($file->getPathname())->replace($this->dataPath, '')->toString()
-                );
-            }
-            return $contentCollection;
-        };
-
-    }
-
-    private function readFiles(string $content): \Closure
-    {
-        return function (CacheItem $item) use ($content) {
-            $contentCollection = [];
-
-            foreach ((new Finder())->in($this->dataPath)->files()->name(['*.md', '*.ptxt'])->contains('~'.$content.'~i') as $file) {
-                $baseName = u($file->getBasename());
-                $fileName = u($file->getFilename());
-                $path = u($file->getPathname())->replace($this->dataPath, '');
-                if ($baseName->endsWith('ptxt')) {
-                    $baseName = $baseName->replace('.ptxt', '.pdf');
-                    $fileName = $fileName->replace('.ptxt', '.pdf');
-                    $path = $path->replace('.ptxt', '.pdf');
+        if (!empty($result)) {
+            foreach ($result as $entry) {
+                if (
+                    array_key_exists($section, $contentCollection)
+                    && array_key_exists($entry['name'], $contentCollection[$section])
+                ) {
+                    continue;
                 }
-                $contentCollection[] = new SearchResult(
-                    $baseName->toString(),
-                    $fileName->toString(),
-                    $path->toString()
-                );
+                $contentCollection[$section][$entry['name']] = $entry;
             }
-
-            return $contentCollection;
-        };
+        }
+        return $contentCollection;
     }
 }

@@ -6,6 +6,7 @@ use App\ContentLister\Entity\FolderCollection;
 use App\ContentLister\Entity\FolderEntry;
 use App\MarkdownContent\MarkdownReader;
 use App\Repository\MemoRepository;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 use function Symfony\Component\String\u;
@@ -83,6 +84,42 @@ class ContentFolderLister
             $memo['path'] = $memo['location'] . '/' . $memo['file_name'];
 
             return $memo;
+        };
+    }
+
+    public function getAllFolders(): array
+    {
+        return $this->cache->get(
+            'allFolders',
+            $this->getAllFoldersEntry()
+        );
+        return $this->getAllFolderEntry();
+
+    }
+
+    /**
+     * @return array
+     */
+    private function getAllFoldersEntry(): \Closure
+    {
+        return function (ItemInterface $item) {
+            $item->expiresAfter(10);
+            $folders = [];
+            $propertyAccessor = PropertyAccess::createPropertyAccessorBuilder()
+                ->enableExceptionOnInvalidIndex()
+                ->getPropertyAccessor();
+            foreach ($this->memoRepo->findAll() as $memo) {
+                $folderPathParts = u($memo->getLocation())->after('/',)->split('/');
+                foreach ($folderPathParts as $key => $part) {
+                    $folderPathParts[$key] = $part->ensureStart('[')->ensureEnd(']');
+                }
+                $value = u($memo->getLocation())->afterLast('/')->toString();
+                $path = implode('', $folderPathParts);
+
+                $propertyAccessor->setValue($folders, $path, $value);
+            }
+
+            return $folders;
         };
     }
 }

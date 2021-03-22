@@ -29,3 +29,28 @@ $(document).ready(function() {
 $(document).ready(function () {
     bsCustomFileInput.init()
 })
+
+function setFolderPath(element) {
+    console.debug(element);
+}
+
+$.each($("a[href^='#folder_']"), function () {
+    $(this).on('click', function () {
+        $('#memo_pdf_type').val($(this).data('path'));
+    })
+});
+
+$.each($("span[class^='newFolder_']"), function () {
+    $(this).on('click', function () {
+        $('#newFolderEntry').val($(this).data('path'));
+    })
+});
+
+function renderFolderBreadcrumb() {
+  let crumb = $('#newFolderBreadcrumb');
+  let folderPath = $('#newFolderEntry').val();
+  $.each(folderPath.split('/'), function () {
+      console.debug($(this));
+
+  });
+}

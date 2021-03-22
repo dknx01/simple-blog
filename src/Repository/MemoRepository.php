@@ -4,7 +4,6 @@ namespace App\Repository;
 
 use App\Entity\Memo;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -12,7 +11,6 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Memo|null findOneBy(array $criteria, array $orderBy = null)
  * @method Memo[]    findAll()
  * @method Memo[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
- * @method
  */
 class MemoRepository extends ServiceEntityRepository
 {
@@ -66,5 +64,32 @@ class MemoRepository extends ServiceEntityRepository
             ->setParameter('entry', $path);
 
         return $qb->getQuery()->getSingleResult();
+    }
+
+    public function findFileName(string $content): array
+    {
+        $qb = $this->createQueryBuilder('m');
+        $qb->select('m.uuid as id, m.fileName as name')
+            ->where('m.fileName LIKE :content')
+            ->setParameter('content', '%' . $content . '%');
+        return $qb->getQuery()->getScalarResult();
+    }
+
+    public function findFolderName(string $content): array
+    {
+        $qb = $this->createQueryBuilder('m');
+        $qb->select('m.uuid as id, m.location as name')
+            ->where('m.location LIKE :content')
+            ->setParameter('content', '%' . $content . '%');
+        return $qb->getQuery()->getScalarResult();
+    }
+
+    public function findContent(string $content): array
+    {
+        $qb = $this->createQueryBuilder('m');
+        $qb->select('m.uuid as id, m.fileName as name')
+            ->where('m.content LIKE :content')
+            ->setParameter('content', '%' . $content . '%');
+        return $qb->getQuery()->getScalarResult();
     }
 }

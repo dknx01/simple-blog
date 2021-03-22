@@ -38,7 +38,7 @@ user:
     'name not empty': 'Username darf nicht leer sein'
 document_folder:
   header: 'Dokumentenordner'
-  documents: 'Dokumente'
+  documents: '/'
   new_folder: 'Neuer Ordner'
   create_new_folder: 'Dokumentenordner anlegen'
   new_document: 'Neues Dokument'

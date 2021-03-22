@@ -28,25 +28,22 @@ class SearchController extends AbstractController
             && $this->isCsrfTokenValid('search', $request->request->get('_csrf_token'))
         ) {
             $searchText = $request->request->get('searchText');
-            $folderFiles = $contentSearch->listContent($searchText);
-
-            $content = $contentSearch->findContent($searchText);
-            $result = array_merge($folderFiles, $content);
+            $result = $contentSearch->findContent($searchText);
         }
 
         return $this->render('search/index.html.twig', ['name' => $searchText, 'result' => $result, 'searchText' => $searchText]);
     }
 
     /**
-     * @Route("/search_result/{path}", name="search_result")
+     * @Route("/search_result/{type}/{name}", name="search_result")
      * @IsGranted("IS_AUTHENTICATED_FULLY")
+     * @param string $type
      * @param string $path
      * @return Response
      */
-    public function searchResult(string $path): Response
+    public function searchResult(string $type, string $path): Response
     {
-        $path = Sanitizer::securePath(urldecode($path));
-        $path = u($path);
+        $path = urldecode($path);
         if ($path->afterLast('.')->toString() !== 'md') {
             return $this->redirectToRoute('file', ['path' => urlencode($path->toString())]);
         }
