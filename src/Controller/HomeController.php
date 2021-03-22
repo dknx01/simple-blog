@@ -130,7 +130,7 @@ class HomeController extends AbstractController
     {
         $path = urldecode($path);
         $memo = $this->memoRepo->findMemo($path);
-        $file = new File($this->dataPath . '/' . $memo['uuid'] . $memo['extension']);
+        $file = new File($this->dataPath . '/' . $memo['uuid'] . '.' . $memo['extension']);
         $fileName = $memo['file_name'];
         return $this->file($file, $fileName, ResponseHeaderBag::DISPOSITION_INLINE);
     }

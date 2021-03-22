@@ -46,11 +46,11 @@ $.each($("span[class^='newFolder_']"), function () {
     })
 });
 
-function renderFolderBreadcrumb() {
-  let crumb = $('#newFolderBreadcrumb');
-  let folderPath = $('#newFolderEntry').val();
-  $.each(folderPath.split('/'), function () {
-      console.debug($(this));
-
-  });
-}
+$(document).ready(function() {
+    $("#docList").on("keyup", function () {
+        var value = $(this).val().toLowerCase();
+        $("#docListTable tr").filter(function () {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+    });
+});
