@@ -14,7 +14,7 @@
                         <div class="col-xl-2"></div>
                         <div class="col-xl-8">
                                 <div class="card mb-4">
-                                {% if content.type is constant('App\\Entity\\MemoContent::PDF') %}
+                                {% if content.extension == 'pdf' %}
                                         <style>
                                                 .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
                                                 .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
@@ -25,7 +25,10 @@
                                         </div>
                                 {% else %}
                                         <div class="card-header">
-                                                {{ content.path }} <a title="{{ 'download_as_pdf'|trans }}" target="_blank" href="{{ path('pdf', {path: content.path|url_encode}) }}"><i class="fas fa-download"></i></a><a title="{{ 'edit'|trans }}" href="{{ path('memo-edit', {path: (content.path ~ '.md')|url_encode}) }}"><i class="fas fa-edit"></i></a>
+                                                {{ content.location }}/{{ content.title}}
+                                                {% if is_granted('ROLE_ADMIN') %}
+                                                <a title="{{ 'edit'|trans }}" href="{{ path('memo-edit', {path: (content.path)|url_encode}) }}"><i class="fas fa-edit"></i></a>
+                                                {% endif %}
                                         </div>
                                         <div class="card-body">
                                                 {{ content.content|raw }}

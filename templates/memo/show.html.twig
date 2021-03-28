@@ -1,6 +1,6 @@
-{% extends 'base.html.twig' %}
+<!DOCTYPE html>
 
-{% block title %}Memo{% endblock %}
+<title>Memo</title>
 
 {% block body %}
     <h1>Memo</h1>
@@ -13,19 +13,39 @@
             </tr>
             <tr>
                 <th>Title</th>
-                <td>{{ memo.Title }}</td>
+                <td>{{ memo.title }}</td>
             </tr>
             <tr>
                 <th>Content</th>
-                <td>{{ memo.Content }}</td>
+                <td>{{ memo.content }}</td>
             </tr>
             <tr>
                 <th>Date</th>
-                <td>{{ memo.Date ? memo.Date|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ memo.date ? memo.date|date('Y-m-d H:i:s') : '' }}</td>
             </tr>
             <tr>
                 <th>Location</th>
-                <td>{{ memo.Location }}</td>
+                <td>{{ memo.location }}</td>
+            </tr>
+            <tr>
+                <th>Type</th>
+                <td>{{ memo.type }}</td>
+            </tr>
+            <tr>
+                <th>FileName</th>
+                <td>{{ memo.fileName }}</td>
+            </tr>
+            <tr>
+                <th>Extension</th>
+                <td>{{ memo.extension }}</td>
+            </tr>
+            <tr>
+                <th>OnDisk</th>
+                <td>{{ memo.onDisk ? 'Yes' : 'No' }}</td>
+            </tr>
+            <tr>
+                <th>Uuid</th>
+                <td>{{ memo.uuid }}</td>
             </tr>
         </tbody>
     </table>

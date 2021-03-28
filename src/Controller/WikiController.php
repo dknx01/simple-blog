@@ -63,7 +63,7 @@ class WikiController extends AbstractController
      */
     public function show(string $path, WikiRepository $wikiRepository): Response
     {
-        $path = Sanitizer::removeDotsAndTilde(urldecode($path));
+        $path = urldecode($path);
         return $this->render('wiki/show.html.twig', [
             'content' => $wikiRepository->findOneByPath($path),
             'title' => u($path)->ensureStart('/')->afterLast('/')->toString(),
@@ -81,17 +81,19 @@ class WikiController extends AbstractController
      */
     public function edit(Request $request, string $path, WikiRepository $wikiRepository): Response
     {
-        $path = Sanitizer::removeDotsAndTilde(urldecode($path));
+        $path = urldecode($path);
         $wiki = new Wiki();
         if ($request->getMethod() === Request::METHOD_GET) {
-            $wiki->setName($path);
-            $wiki->setContent($wikiRepository->finOneRawByPath($path));
+            $memo = $wikiRepository->findOneByPathRaw($path);
+            $wiki->setName($memo->getTitle());
+            $wiki->setContent($memo->getContent());
+            $wiki->setId($memo->getId());
         }
         $form = $this->createForm(WikiType::class, $wiki);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $wikiRepository->save($form->getData());
+            $wikiRepository->update($form->getData());
         }
 
         return $this->render('wiki/edit.html.twig', [

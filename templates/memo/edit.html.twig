@@ -1,51 +1,13 @@
-{% extends 'layout/conatiner_fluid.html.twig' %}
+<!DOCTYPE html>
 
-{% block title %}{{ 'memo.files.title'|trans({}, 'pages') }}{% endblock %}
+<title>Edit Memo</title>
 
-{% block content_header %}{{ 'memo.files.edit'|trans({}, 'pages') }}{% endblock %}
+{% block body %}
+    <h1>Edit Memo</h1>
 
-{% block card_body %}
-    {% if errors %}
-    {% for error in errors %}
-        <div class="alert alert-danger">{{ error }}</div>
-    {% endfor %}
-    {% endif %}
-    {{ include('memo/_form.html.twig') }}
-{% endblock %}
+    {{ include('memo/_form.html.twig', {'button_label': 'Update'}) }}
 
-{% block javascripts %}
-    <link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
-    <script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
-    <script>
-        var easyMDE = new EasyMDE({
-            autofocus: true,
-            autosave: {
-                enabled: true,
-                uniqueId: "{{ uuid() }}",
-                delay: 1000,
-                submit_delay: 5000,
-                timeFormat: {
-                    locale: 'en-US',
-                    format: {
-                        year: 'numeric',
-                        month: 'long',
-                        day: '2-digit',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                    },
-                },
-                text: "Autosaved: "
-            },
-            toolbar: [
-                "bold", "italic", "strikethrough", "|",
-                "heading", "heading-smaller", "heading-bigger", "|",
-                "quote", "code", "|",
-                "unordered-list", "ordered-list", "|",
-                "link", "image", "table", "horizontal-rule", "|",
-                "preview", "side-by-side", "|",
-                "guide"
-            ]
-        });
-    </script>
-    {{ parent() }}
+    <a href="{{ path('memo_index') }}">back to list</a>
+
+    {{ include('memo/_delete_form.html.twig') }}
 {% endblock %}

@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\MemoRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Uid\UuidV4;
 
 /**
  * @ORM\Entity(repositoryClass=MemoRepository::class)
@@ -20,17 +21,17 @@ class Memo
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $Title;
+    private $title;
 
     /**
      * @ORM\Column(type="text", nullable=true)
      */
-    private $Content;
+    private $content;
 
     /**
      * @ORM\Column(type="datetime")
      */
-    private $Date;
+    private $date;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -38,15 +39,34 @@ class Memo
     private $location;
 
     /**
-     * @var @ORM\Column(type="string", columnDefinition="ENUM('LV', 'OV TK')")
+     * @var @ORM\Column(type="string")
      */
     private $type;
 
     /**
+     * @ORM\Column(type="string", length=255)
      */
+    private $fileName;
+
+    /**
+     * @ORM\Column(type="string", length=4)
+     */
+    private $extension;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $onDisk;
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    private $uuid;
+
     public function __construct()
     {
-        $this->Date = new \DateTime();
+        $this->date = new \DateTime();
+        $this->uuid = (UuidV4::v4())->toRfc4122();
     }
 
     public function getId(): ?int
@@ -56,36 +76,36 @@ class Memo
 
     public function getTitle(): ?string
     {
-        return $this->Title;
+        return $this->title;
     }
 
-    public function setTitle(string $Title): self
+    public function setTitle(string $title): self
     {
-        $this->Title = $Title;
+        $this->title = $title;
 
         return $this;
     }
 
     public function getContent(): ?string
     {
-        return $this->Content;
+        return $this->content;
     }
 
-    public function setContent(?string $Content): self
+    public function setContent(?string $content): self
     {
-        $this->Content = $Content;
+        $this->content = $content;
 
         return $this;
     }
 
     public function getDate(): ?\DateTimeInterface
     {
-        return $this->Date;
+        return $this->date;
     }
 
-    public function setDate(\DateTimeInterface $Date): self
+    public function setDate(\DateTimeInterface $date): self
     {
-        $this->Date = $Date;
+        $this->date = $date;
 
         return $this;
     }
@@ -107,7 +127,7 @@ class Memo
      * @param mixed $type
      * @return Memo
      */
-    public function setType($type)
+    public function setType($type): Memo
     {
         $this->type = $type;
         return $this;
@@ -118,5 +138,54 @@ class Memo
         $this->location = $location;
 
         return $this;
+    }
+
+    public function getFileName(): ?string
+    {
+        return $this->fileName;
+    }
+
+    public function setFileName(string $fileName): self
+    {
+        $this->fileName = $fileName;
+
+        return $this;
+    }
+
+    public function getExtension(): ?string
+    {
+        return $this->extension;
+    }
+
+    public function setExtension(string $extension): self
+    {
+        $this->extension = $extension;
+
+        return $this;
+    }
+
+    public function getOnDisk(): ?bool
+    {
+        return $this->onDisk;
+    }
+
+    public function setOnDisk(bool $onDisk): self
+    {
+        $this->onDisk = $onDisk;
+
+        return $this;
+    }
+
+    public function getUuid()
+    {
+        return $this->uuid;
+    }
+
+    /**
+     * @param mixed $id
+     */
+    public function setId($id): void
+    {
+        $this->id = $id;
     }
 }

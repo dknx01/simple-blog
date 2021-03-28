@@ -14,14 +14,15 @@
     </style>
 
         <ul>
-            {% for data in content.directories() %}
-                <li><a href="{{path('documents', {path: data.path|url_encode})  }}"><i class="fas fa-folder"></i> {{ data.FileName }}</a></li>
-            {% endfor %}
-            {% for data in content.files %}
-                {% if data.downloadable  %}
-                    <li><a href="{{ path('file', {path: [ data.path, '/', data.fileName]|join|url_encode}) }}" target="_blank" download="{{ data.ReadableFileName }}">{{ _self.filetype(data) }} {{ data.ReadableFileName }}</a></li>
+            {% for data in content %}
+                {% if data.type == 0 %}
+                <li><a href="{{path('documents', {path: data.path|url_encode})  }}" class="folder-partei"><i class="fas fa-folder"></i> {{ data.fileName }}</a></li>
                 {% else %}
-                    <li><a href="{{ path('memo', {path: [data.path, '/', data.fileName]|join|url_encode}) }}">{{ _self.filetype(data) }}{{ data.ReadableFileName }}</a></li>
+                    {% if data.onDisk and data.extension != 'pdf' %}
+                        <li><a href="{{ path('file', {path: [ data.path, '/', data.fileName]|join|url_encode}) }}" target="_blank" download="{{ data.fileName }}">{{ _self.filetype(data) }} {{ data.fileName }}</a></li>
+                    {% else %}
+                        <li><a href="{{ path('memo', {path: [data.path, '/', data.fileName]|join|url_encode}) }}">{{ _self.filetype(data) }}{{ data.fileName }}</a></li>
+                    {% endif %}
                 {% endif %}
             {% endfor %}
 
@@ -32,9 +33,9 @@
 
 {% macro filetype(data)%}
     {% set class='fa-file' %}
-    {% if data.extension is constant('App\\Entity\\MemoContent::PDF') %}
+    {% if data.extension == 'pdf' %}
         {% set class='fa-file-pdf' %}
-    {% elseif data.extension is constant('App\\Entity\\MemoContent::DOCX') %}
+    {% elseif data.extension == 'docx' %}
         {% set class='fa-file-word' %}
     {% endif %}
     <i class="fas {{ class }}"></i>

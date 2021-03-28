@@ -29,3 +29,28 @@ $(document).ready(function() {
 $(document).ready(function () {
     bsCustomFileInput.init()
 })
+
+function setFolderPath(element) {
+    console.debug(element);
+}
+
+$.each($("a[href^='#folder_']"), function () {
+    $(this).on('click', function () {
+        $('#memo_pdf_type').val($(this).data('path'));
+    })
+});
+
+$.each($("span[class^='newFolder_']"), function () {
+    $(this).on('click', function () {
+        $('#newFolderEntry').val($(this).data('path'));
+    })
+});
+
+$(document).ready(function() {
+    $("#docList").on("keyup", function () {
+        var value = $(this).val().toLowerCase();
+        $("#docListTable tr").filter(function () {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+    });
+});

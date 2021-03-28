@@ -17,7 +17,8 @@ RUN version=$(php -r "echo PHP_MAJOR_VERSION.PHP_MINOR_VERSION;") \
     && printf "extension=blackfire.so\nblackfire.agent_socket=tcp://blackfire:8707\n" > /etc/php/7.4/fpm/conf.d/blackfire.ini
 
 RUN mkdir -p /run/php/ && touch /run/php/php7.4-fpm.pid && chown $USER_ID:www-data /run/php/php7.4-fpm.pid
-
+RUN wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.focal_amd64.deb \
+    && sudo apt install ./wkhtmltox_0.12.6-1.focal_amd64.deb -y
 WORKDIR /var/www
 
 CMD ["php-fpm7.4", "-F"]

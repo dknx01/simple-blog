@@ -30,3 +30,6 @@ data/
 public/
 .idea/
 Templates-Downloads/
+.cache/fontconfig/
+
+*.deb

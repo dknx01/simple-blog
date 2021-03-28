@@ -40,11 +40,28 @@
                                 {{ 'results.no'|trans({}, 'search') }}
                             </div>
                         {% else %}
-                            {% for result in result %}
-                                <a href="{{ path('search_result', {'path': result.path|url_encode}) }}" class="list-group-item list-group-item-action">
-                                    {{ result.name }}
-                                </a>
-                            {% endfor %}
+                            {% if result.folder is defined %}
+                                {% for result in result.folder %}
+                                    <a href="{{ path('search_result', {'name': result.name|url_encode, 'type': 'folder'}) }}" class="list-group-item list-group-item-action">
+                                        {{ result.name }}
+                                    </a>
+                                {% endfor %}
+                            {% endif %}
+                            {% if result.files is defined %}
+                                {% for result in result.files %}
+                                  <a href="{{ path('search_result', {'name': result.name|url_encode, 'type': 'file'}) }}" class="list-group-item list-group-item-action">
+                                        {{ result.name }}
+                                    </a>
+                                {% endfor %}
+                            {% endif %}
+                            {% if result.content is defined %}
+                                {% for result in result.content %}
+                                    <a href="{{ path('search_result', {'name': result.name|url_encode, 'type': 'content'}) }}" class="list-group-item list-group-item-action">
+                                        {{ result.name }}
+                                    </a>
+                                {% endfor %}
+                            {% endif %}
+
                         {% endif %}
                     </div>
                 </div>

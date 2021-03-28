@@ -50,13 +50,12 @@ services:
 
     App\ContentLister\ContentSearch:
         arguments:
-            $dataPath: '%kernel.project_dir%/%data_folder%'
             $cache: '@cache.search'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
 
-    App\Repository\MemoRepository:
+    App\Repository\Old\MemoRepository:
         arguments:
             $path: '%kernel.project_dir%/%data_folder%'
     App\Repository\NewDocumentRepository:
@@ -79,3 +78,7 @@ services:
             $globalClearer: '@cache.global_clearer'
 
     Symfony\Bridge\Doctrine\Security\RememberMe\DoctrineTokenProvider: ~
+
+    App\Command\ImportFilesCommand:
+        arguments:
+            $basePath: '%data_folder%'

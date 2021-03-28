@@ -7,15 +7,15 @@
                         <div class="sb-nav-link-icon"><i class="fas fa-pencil-alt"></i></div>
                     {{ 'memo.new'|trans({}, 'menu') }}
                 </a>
-                <a class="nav-link" href="{{ path('link-collection-edit') }}">
-                        <div class="sb-nav-link-icon"><i class="fas fa-list-alt"></i></div>
-                    {{ 'memo.linklist_edit'|trans({}, 'menu') }}
-                </a>
+{#                <a class="nav-link" href="{{ path('link-collection-edit') }}">#}
+{#                        <div class="sb-nav-link-icon"><i class="fas fa-list-alt"></i></div>#}
+{#                    {{ 'memo.linklist_edit'|trans({}, 'menu') }}#}
+{#                </a>#}
                 <a class="nav-link" href="{{ path('memo_upload') }}">
                         <div class="sb-nav-link-icon"><i class="fas fa-upload"></i></div>
                     {{ 'memo.pdf_upload'|trans({}, 'menu') }}
                 </a>
-                <a class="nav-link" href="{{ path('memo-edit-list') }}">
+                <a class="nav-link" href="{{ path('memo_index') }}">
                         <div class="sb-nav-link-icon"><i class="fas fa-list-alt"></i></div>
                     {{ 'memo.document_list'|trans({}, 'menu') }}
                 </a>
@@ -34,17 +34,17 @@
                         </nav>
                     </div>
                 {% endif %}
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseFolder"
-                   aria-expanded="false" aria-controls="collapseFolder">
-                    <div class="sb-nav-link-icon"><i class="fas fa-folder-open"></i></div>
-                    {{ 'documents.headline'|trans({}, 'menu') }}
-                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                </a>
-                <div class="collapse" id="collapseFolder" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
-                    <nav class="sb-sidenav-menu-nested nav">
-                        <a class="nav-link" href="{{ path('document_folder_list') }}"><div class="sb-nav-link-icon"><i class="fas fa-folder-plus"></i></div>{{ 'documents.new'|trans({}, 'menu') }}</a>
-                    </nav>
-                </div>
+{#                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseFolder"#}
+{#                   aria-expanded="false" aria-controls="collapseFolder">#}
+{#                    <div class="sb-nav-link-icon"><i class="fas fa-folder-open"></i></div>#}
+{#                    {{ 'documents.headline'|trans({}, 'menu') }}#}
+{#                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>#}
+{#                </a>#}
+{#                <div class="collapse" id="collapseFolder" aria-labelledby="headingOne" data-parent="#sidenavAccordion">#}
+{#                    <nav class="sb-sidenav-menu-nested nav">#}
+{#                        <a class="nav-link" href="{{ path('document_folder_list') }}"><div class="sb-nav-link-icon"><i class="fas fa-folder-plus"></i></div>{{ 'documents.new'|trans({}, 'menu') }}</a>#}
+{#                    </nav>#}
+{#                </div>#}
                 {% if is_granted(constant('App\\Security\\Roles::ROLE_ADMIN')) %}
                     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseFolder"
                        aria-expanded="false" aria-controls="collapseFolder">

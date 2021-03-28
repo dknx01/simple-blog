@@ -9,7 +9,7 @@ suggestion: 'Ideen'
 memo:
   new: 'Neues Stammtisch-Memo (Markdown)'
   linklist_edit: 'Linkliste bearbeiten'
-  pdf_upload:  'Upload PDF'
+  pdf_upload:  'Upload File'
   document_list: 'Dokumentenliste'
   headline: 'Memo'
 site_management: 'Seitenverwaltung'
