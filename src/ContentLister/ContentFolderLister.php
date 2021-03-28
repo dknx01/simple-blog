@@ -93,8 +93,6 @@ class ContentFolderLister
             'allFolders',
             $this->getAllFoldersEntry()
         );
-        return $this->getAllFolderEntry();
-
     }
 
     /**
@@ -106,17 +104,22 @@ class ContentFolderLister
             $item->expiresAfter(10);
             $folders = [];
             $propertyAccessor = PropertyAccess::createPropertyAccessorBuilder()
-                ->enableExceptionOnInvalidIndex()
                 ->getPropertyAccessor();
-            foreach ($this->memoRepo->findAll() as $memo) {
-                $folderPathParts = u($memo->getLocation())->after('/',)->split('/');
+            foreach ($this->memoRepo->findAllDistinct() as $memo) {
+                $folderPathParts = u($memo['location'])->after('/',)->split('/');
                 foreach ($folderPathParts as $key => $part) {
                     $folderPathParts[$key] = $part->ensureStart('[')->ensureEnd(']');
                 }
-                $value = u($memo->getLocation())->afterLast('/')->toString();
+                $value = u($memo['location'])->afterLast('/')->toString();
                 $path = implode('', $folderPathParts);
 
-                $propertyAccessor->setValue($folders, $path, $value);
+                try {
+                    $propertyAccessor->setValue($folders, $path, $value);
+                } catch (\Exception $exception) {
+                    $tmpArray = [];
+                    $propertyAccessor->setValue($tmpArray, $path, $value);
+                    $folders = array_merge($folders, $tmpArray);
+                }
             }
 
             return $folders;

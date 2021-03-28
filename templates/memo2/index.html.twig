@@ -20,12 +20,12 @@
                 <th>actions</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="docListTable">
         {% for memo in memos %}
             <tr>
                 <td>{{ memo.id }}</td>
                 <td>{{ memo.title }}</td>
-                <td>{{ memo.content }}</td>
+                <td>{{ memo.content|length > 150 ? memo.content|slice(0, 150) ~ '...' : memo.content }}</td>
                 <td>{{ memo.date ? memo.date|date('Y-m-d H:i:s') : '' }}</td>
                 <td>{{ memo.location }}</td>
                 <td>{{ memo.type }}</td>

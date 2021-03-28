@@ -12,7 +12,7 @@
                 <i class="expanded"><i class="far fa-folder-open"></i></i> {{ 'document_folder.documents'|trans({}, 'pages') }}</a></span>
                     <div id="Dokumente" class="collapse show">
                         <ul>
-                            <li><span><i class="fas fa-folder-plus"></i> {{ 'document_folder.new_folder'|trans({}, 'pages') }}</span>
+{#                            <li><span><i class="fas fa-folder-plus"></i> {{ 'document_folder.new_folder'|trans({}, 'pages') }}</span>#}
                                 {% for key, folder  in folders %}
                                     {{ _self.subFolders(key, folder, loop.index, ['/', key]|join) }}
                                 {% endfor %}

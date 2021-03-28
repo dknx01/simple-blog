@@ -16,7 +16,7 @@
         <ul>
             {% for data in content %}
                 {% if data.type == 0 %}
-                <li><a href="{{path('documents', {path: data.path|url_encode})  }}"><i class="fas fa-folder"></i> {{ data.fileName }}</a></li>
+                <li><a href="{{path('documents', {path: data.path|url_encode})  }}" class="folder-partei"><i class="fas fa-folder"></i> {{ data.fileName }}</a></li>
                 {% else %}
                     {% if data.onDisk and data.extension != 'pdf' %}
                         <li><a href="{{ path('file', {path: [ data.path, '/', data.fileName]|join|url_encode}) }}" target="_blank" download="{{ data.fileName }}">{{ _self.filetype(data) }} {{ data.fileName }}</a></li>

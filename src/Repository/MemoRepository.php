@@ -92,4 +92,10 @@ class MemoRepository extends ServiceEntityRepository
             ->setParameter('content', '%' . $content . '%');
         return $qb->getQuery()->getScalarResult();
     }
+
+    public function findAllDistinct(): array
+    {
+        $query = 'SELECT DISTINCT location FROM memo';
+        return $this->_em->getConnection()->executeQuery($query)->fetchAllAssociative();
+    }
 }
