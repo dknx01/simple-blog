@@ -89,6 +89,27 @@ class HomeController extends AbstractController
     }
 
     /**
+     * @Route("/memo_short/{id}", name="memo_short_link")
+     * @IsGranted("IS_AUTHENTICATED_FULLY")
+     * @param string $id
+     * @return Response
+     */
+    public function shortLink(string $id): Response
+    {
+        /** @var Memo $memo */
+        $memo = $this->memoRepo->findOneBy(['uuid' => $id]);
+        if ($memo === null) {
+            return $this->redirectToRoute('home');
+        }
+        return $this->redirectToRoute(
+            'memo',
+            [
+                'path' => urlencode($memo->getLocation() . '/' . $memo->getFileName())
+            ]
+        );
+    }
+
+    /**
      * @Route("/linksammlung", name="link-collection")
      * @IsGranted("IS_AUTHENTICATED_FULLY")
      * @return Response

@@ -115,7 +115,6 @@ class MemoUpload extends AbstractController
     }
 
     /**
-     * @Route("/edit/{path}", name="memo-edit", methods={"GET","POST"})
      * @IsGranted("ROLE_EDITOR")
      * @param Request $request
      * @param MarkdownReader $markdownReader

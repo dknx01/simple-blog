@@ -27,7 +27,8 @@
                                         <div class="card-header">
                                                 {{ content.location }}/{{ content.title}}
                                                 {% if is_granted('ROLE_ADMIN') %}
-                                                <a title="{{ 'edit'|trans }}" href="{{ path('memo-edit', {path: (content.path)|url_encode}) }}"><i class="fas fa-edit"></i></a>
+                                                <a title="{{ 'edit'|trans }}" href="{{ path('memo_edit', {id: (content.id)|url_encode}) }}"><i class="fas fa-edit"></i></a>
+                                                <a title="{{ 'short_link'|trans }}" href="{{ path('memo_short_link', {id: (content.uuid)}) }}"><i class="fas fa-link"></i></a>
                                                 {% endif %}
                                         </div>
                                         <div class="card-body">

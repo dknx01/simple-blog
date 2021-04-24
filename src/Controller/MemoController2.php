@@ -6,7 +6,6 @@ use App\ContentLister\ContentFolderLister;
 use App\Entity\Memo;
 use App\Form\Memo1Type;
 use App\Form\MemoType;
-use App\MarkdownContent\MarkdownReader;
 use App\Repository\MemoRepository;
 use Psr\Cache\InvalidArgumentException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -21,13 +20,13 @@ use Twig\Environment;
  */
 class MemoController2 extends AbstractController
 {
-    private MarkdownReader $markdown;
     private Environment $twig;
+    private string $dataPath;
 
-    public function __construct(MarkdownReader $markdownReader, Environment $twig)
+    public function __construct(string $dataPath, Environment $twig)
     {
-        $this->markdown = $markdownReader;
         $this->twig = $twig;
+        $this->dataPath = $dataPath;
     }
     /**
      * @Route("/new", name="memo_new", methods={"GET","POST"})
@@ -158,6 +157,9 @@ class MemoController2 extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($memo);
             $entityManager->flush();
+            if ($memo->getOnDisk()) {
+                unlink($this->dataPath . '/' . $memo->getUuid() . '.' . $memo->getExtension());
+            }
         }
 
         return $this->redirectToRoute('memo_index');

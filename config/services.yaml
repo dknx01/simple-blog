@@ -77,6 +77,10 @@ services:
         arguments:
             $globalClearer: '@cache.global_clearer'
 
+    App\Controller\MemoController2:
+        arguments:
+            $dataPath: '%kernel.project_dir%/%data_folder%'
+
     Symfony\Bridge\Doctrine\Security\RememberMe\DoctrineTokenProvider: ~
 
     App\Command\ImportFilesCommand:

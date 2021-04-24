@@ -6,6 +6,7 @@
 
 {% block card_body %}
     {{ include('memo/_form.html.twig') }}
+    <a href="{{ path('memo_delete', {'id': memo.id}) }}">Löschen</a>
 {% endblock %}
 
 {% block javascripts %}
